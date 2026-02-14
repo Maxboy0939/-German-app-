@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>German App - اپلیکیشن یادگیری آلمانی</title>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #1c1c1e;
+            --bg-tertiary: #2c2c2e;
+            --bg-quaternary: #3a3a3c;
+            --bg-glass: rgba(255, 255, 255, 0.06);
+            --bg-glass-hover: rgba(255, 255, 255, 0.1);
+            --bg-glass-active: rgba(255, 255, 255, 0.15);
+            --bg-glass-border: rgba(255, 255, 255, 0.08);
+            --bg-glass-highlight: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-tertiary: rgba(255, 255, 255, 0.4);
+            --accent-blue: #0a84ff;
+            --accent-green: #30d158;
+            --accent-orange: #ff9f0a;
+            --accent-red: #ff453a;
+            --accent-purple: #bf5af2;
+            --accent-teal: #64d2ff;
+            --accent-pink: #ff375f;
+            --accent-yellow: #ffd60a;
+            --accent-indigo: #5e5ce6;
+            --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-glass-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+            --shadow-glow-blue: 0 0 30px rgba(10, 132, 255, 0.3);
+            --border-radius-sm: 12px;
+            --border-radius-md: 16px;
+            --border-radius-lg: 22px;
+            --border-radius-xl: 28px;
+            --border-radius-full: 9999px;
+            --blur-amount: 40px;
+            --blur-heavy: 80px;
+            --transition-fast: 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-smooth: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-spring: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-bounce: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --font-fa: 'Vazirmatn', sans-serif;
+            --font-en: 'Inter', sans-serif;
+            --nav-height: 84px;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f2f2f7;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e5e5ea;
+            --bg-quaternary: #d1d1d6;
+            --bg-glass: rgba(255, 255, 255, 0.75);
+            --bg-glass-hover: rgba(255, 255, 255, 0.88);
+            --bg-glass-active: rgba(255, 255, 255, 0.95);
+            --bg-glass-border: rgba(0, 0, 0, 0.06);
+            --bg-glass-highlight: rgba(255, 255, 255, 0.95);
+            --text-primary: #1c1c1e;
+            --text-secondary: rgba(0, 0, 0, 0.55);
+            --text-tertiary: rgba(0, 0, 0, 0.25);
+            --accent-blue: #007aff;
+            --accent-green: #28cd41;
+            --accent-orange: #ff9500;
+            --accent-red: #ff3b30;
+            --accent-purple: #af52de;
+            --accent-teal: #5ac8fa;
+            --accent-pink: #ff2d55;
+            --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --shadow-glass-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+            --shadow-glow-blue: 0 0 30px rgba(0, 122, 255, 0.15);
+        }
+
+        *, *::before, *::after {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-fa);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            transition: background 0.5s ease, color 0.5s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ====== GLASS COMPONENTS ====== */
+        .glass {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--bg-glass-border);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-glass);
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--bg-glass-highlight), transparent);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .glass-interactive {
+            cursor: pointer;
+        }
+
+        .glass-interactive:hover {
+            background: var(--bg-glass-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glass-lg);
+        }
+
+        .glass-interactive:active {
+            transform: translateY(0) scale(0.98);
+            background: var(--bg-glass-active);
+        }
+
+        /* ====== APP CONTAINER ====== */
+        #app {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            min-height: 100dvh;
+            position: relative;
+            padding-bottom: calc(var(--nav-height) + 16px);
+        }
+
+        /* ====== HEADER ====== */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-heavy));
+            -webkit-backdrop-filter: blur(var(--blur-heavy));
+            border-bottom: 1px solid var(--bg-glass-border);
+            padding: 14px 20px;
+            padding-top: max(env(safe-area-inset-top, 14px), 14px);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 44px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-family: var(--font-fa);
+            padding: 10px;
+            border-radius: var(--border-radius-sm);
+            transition: all var(--transition-fast);
+            min-width: 44px;
+            justify-content: center;
+        }
+
+        .header-btn:active {
+            background: var(--bg-glass);
+            transform: scale(0.95);
+        }
+
+        .header-btn.back-btn {
+            font-weight: 600;
+        }
+
+        .header-btn.hidden { visibility: hidden; pointer-events: none; }
+
+        /* ====== BOTTOM NAV ====== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            height: var(--nav-height);
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-heavy));
+            -webkit-backdrop-filter: blur(var(--blur-heavy));
+            border-top: 1px solid var(--bg-glass-border);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-around;
+            padding: 8px 4px;
+            padding-bottom: max(env(safe-area-inset-bottom, 8px), 8px);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            padding: 8px 14px;
+            border-radius: var(--border-radius-md);
+            transition: all var(--transition-fast);
+            font-family: var(--font-fa);
+            min-width: 60px;
+            position: relative;
+        }
+
+        .nav-item.active { color: var(--accent-blue); }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            width: 20px;
+            height: 3px;
+            border-radius: 2px;
+            background: var(--accent-blue);
+        }
+
+        .nav-item .nav-icon { font-size: 1.4rem; transition: transform var(--transition-spring); }
+        .nav-item.active .nav-icon { transform: scale(1.15); }
+        .nav-item .nav-label { font-size: 0.62rem; font-weight: 600; }
+
+        /* ====== PAGE SYSTEM ====== */
+        .page {
+            display: none;
+            padding: 20px;
+            animation: pageIn 0.35s ease;
+        }
+        .page.active { display: block; }
+
+        @keyframes pageIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        @keyframes ripple {
+            0% { transform: scale(0); opacity: 0.5; }
+            100% { transform: scale(4); opacity: 0; }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* ====== WELCOME BANNER ====== */
+        .welcome-banner {
+            background: linear-gradient(135deg, #0a84ff, #5e5ce6, #bf5af2);
+            border-radius: var(--border-radius-xl);
+            padding: 30px 24px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -30%;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .welcome-banner::after {
+            content: '🇩🇪';
+            position: absolute;
+            bottom: -10px; left: 10px;
+            font-size: 100px;
+            opacity: 0.12;
+        }
+
+        .welcome-banner h1 {
+            font-size: 1.7rem;
+            color: #fff;
+            margin-bottom: 6px;
+            font-family: var(--font-en);
+            font-weight: 800;
+        }
+
+        .welcome-banner .welcome-sub {
+            color: rgba(255,255,255,0.88);
+            font-size: 0.88rem;
+            font-weight: 400;
+        }
+
+        .welcome-banner .welcome-user {
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .welcome-banner .user-mini-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            overflow: hidden;
+        }
+
+        .welcome-banner .user-mini-avatar img {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .welcome-banner .user-mini-name {
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* ====== STATS ROW ====== */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 16px 8px;
+        }
+
+        .stat-card .stat-emoji { font-size: 1.6rem; margin-bottom: 6px; }
+        .stat-card .stat-value {
+            font-size: 1.5rem; font-weight: 800;
+            font-family: var(--font-en);
+        }
+        .stat-card .stat-label {
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* ====== SECTION TITLE ====== */
+        .sec-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ====== LEVEL GRID ====== */
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .level-card {
+            padding: 22px 16px;
+            text-align: center;
+        }
+
+        .level-card .level-icon { font-size: 2.2rem; margin-bottom: 10px; }
+        .level-card .level-name {
+            font-size: 1.15rem;
+            font-weight: 800;
+            font-family: var(--font-en);
+            margin-bottom: 2px;
+        }
+        .level-card .level-desc {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+        .level-card .level-progress {
+            margin-top: 14px;
+            height: 5px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .level-card .level-progress-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.8s ease;
+        }
+
+        /* Level Colors */
+        .level-a11 .level-progress-bar { background: linear-gradient(90deg, #30d158, #28cd41); }
+        .level-a12 .level-progress-bar { background: linear-gradient(90deg, #64d2ff, #5ac8fa); }
+        .level-a21 .level-progress-bar { background: linear-gradient(90deg, #0a84ff, #007aff); }
+        .level-a22 .level-progress-bar { background: linear-gradient(90deg, #bf5af2, #af52de); }
+        .level-b11 .level-progress-bar { background: linear-gradient(90deg, #ff9f0a, #ff9500); }
+        .level-b12 .level-progress-bar { background: linear-gradient(90deg, #ff375f, #ff2d55); }
+        .level-b21 .level-progress-bar { background: linear-gradient(90deg, #ff453a, #ff3b30); }
+        .level-b22 .level-progress-bar { background: linear-gradient(90deg, #ffd60a, #ffcc00); }
+
+        /* ====== LESSON LIST ====== */
+        .lesson-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .lesson-item {
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .lesson-num {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            font-family: var(--font-en);
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .lesson-info { flex: 1; }
+        .lesson-title-text { font-weight: 600; font-size: 0.93rem; margin-bottom: 3px; }
+        .lesson-sub-text { font-size: 0.75rem; color: var(--text-secondary); }
+        .lesson-status { font-size: 1.1rem; }
+
+        /* Progress bar in lessons page */
+        .level-prog-bar {
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 6px 0 4px;
+        }
+        .level-prog-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            transition: width 0.8s ease;
+        }
+
+        /* ====== LESSON DETAIL 4 SECTIONS ====== */
+        .lesson-hero {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+            border-radius: var(--border-radius-xl);
+            padding: 28px 22px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #fff;
+        }
+        .lesson-hero h2 {
+            font-size: 1.4rem;
+            font-family: var(--font-en);
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .lesson-hero p { font-size: 0.88rem; opacity: 0.85; }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .section-btn {
+            padding: 24px 14px;
+            text-align: center;
+        }
+        .section-btn .s-icon { font-size: 2.4rem; margin-bottom: 10px; }
+        .section-btn .s-name { font-weight: 700; font-size: 0.92rem; margin-bottom: 4px; }
+        .section-btn .s-sub { font-size: 0.72rem; color: var(--text-secondary); }
+        .section-btn .s-done {
+            margin-top: 8px;
+            font-size: 0.7rem;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        /* ====== SECTION TABS ====== */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 2px 0 12px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            padding: 8px 16px;
+            border-radius: var(--border-radius-full);
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            background: var(--bg-glass);
+            border: 1px solid var(--bg-glass-border);
+            color: var(--text-secondary);
+            font-family: var(--font-fa);
+        }
+        .tab-btn.active {
+            background: var(--accent-blue);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: var(--shadow-glow-blue);
+        }
+
+        /* ====== VOCAB CARDS ====== */
+        .vocab-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .v-card { padding: 18px; }
+        .v-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .v-word-group { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+        .v-article {
+            font-size: 0.78rem;
+            color: var(--accent-orange);
+            font-weight: 700;
+            font-family: var(--font-en);
+        }
+        .v-word {
+            font-size: 1.15rem;
+            font-weight: 700;
+            font-family: var(--font-en);
+            color: var(--accent-blue);
+        }
+        .v-plural {
+            font-size: 0.75rem;
+            color: var(--accent-purple);
+            font-family: var(--font-en);
+        }
+        .v-speak {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+            border: none;
+            color: #fff;
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+        }
+        .v-speak:active { transform: scale(0.9); }
+        .v-speak.playing {
+            animation: pulse 0.5s infinite;
+            background: linear-gradient(135deg, var(--accent-green), #28cd41);
+        }
+        .v-trans {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        .v-example {
+            background: var(--bg-glass);
+            border-radius: var(--border-radius-sm);
+            padding: 12px 14px;
+            border-right: 3px solid var(--accent-blue);
+        }
+        .v-example .ex-de {
+            font-size: 0.86rem;
+            font-family: var(--font-en);
+            font-style: italic;
+            margin-bottom: 4px;
+        }
+        .v-example .ex-fa {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        /* ====== GRAMMAR ====== */
+        .g-block { padding: 20px; margin-bottom: 12px; }
+        .g-block h3 {
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            color: var(--accent-purple);
+        }
+        .g-block p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.7;
+        }
+        .g-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 0.82rem;
+        }
+        .g-table th {
+            background: var(--bg-glass);
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-family: var(--font-en);
+        }
+        .g-table td {
+            padding: 9px 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--bg-glass-border);
+            font-family: var(--font-en);
+        }
+        .g-example {
+            background: var(--bg-glass);
+            border-radius: var(--border-radius-sm);
+            padding: 10px 14px;
+            margin: 6px 0;
+            border-right: 3px solid var(--accent-purple);
+        }
+        .g-example .g-de {
+            font-family: var(--font-en);
+            font-style: italic;
+            font-size: 0.88rem;
+            margin-bottom: 3px;
+        }
+        .g-example .g-fa {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* ====== EXPLANATION ====== */
+        .exp-block { padding: 20px; margin-bottom: 12px; }
+        .exp-block h3 {
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            color: var(--accent-teal);
+        }
+        .exp-block p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+        .dialog-box {
+            background: var(--bg-glass);
+            border-radius: var(--border-radius-md);
+            padding: 14px;
+            margin: 10px 0;
+        }
+        .dialog-line {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 0.88rem;
+            align-items: flex-start;
+        }
+        .dialog-line:last-child { margin-bottom: 0; }
+        .d-speaker {
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-family: var(--font-en);
+            min-width: 55px;
+            flex-shrink: 0;
+        }
+
+        /* ====== EXERCISES ====== */
+        .ex-container { display: flex; flex-direction: column; gap: 14px; }
+        .ex-card { padding: 20px; }
+        .ex-type {
+            font-size: 0.72rem;
+            color: var(--accent-orange);
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+        .ex-question {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            line-height: 1.6;
+        }
+        .ex-options { display: flex; flex-direction: column; gap: 8px; }
+        .ex-opt {
+            padding: 13px 16px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--bg-glass-border);
+            background: var(--bg-glass);
+        }
+        .ex-opt:active { transform: scale(0.98); }
+        .opt-letter {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700;
+            font-size: 0.78rem;
+            font-family: var(--font-en);
+            flex-shrink: 0;
+            transition: all var(--transition-fast);
+        }
+        .ex-opt.correct {
+            background: rgba(48, 209, 88, 0.12);
+            border-color: var(--accent-green);
+        }
+        .ex-opt.correct .opt-letter { background: var(--accent-green); color: #fff; }
+        .ex-opt.wrong {
+            background: rgba(255, 69, 58, 0.12);
+            border-color: var(--accent-red);
+            animation: shake 0.4s ease;
+        }
+        .ex-opt.wrong .opt-letter { background: var(--accent-red); color: #fff; }
+        .ex-opt.disabled { pointer-events: none; opacity: 0.7; }
+
+        .fill-input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--accent-blue);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: var(--font-en);
+            padding: 6px 2px;
+            outline: none;
+            width: 100%;
+            max-width: 250px;
+            transition: border-color var(--transition-fast);
+        }
+        .fill-input:focus { border-color: var(--accent-purple); }
+
+        .check-answer-btn {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+            border: none;
+            color: #fff;
+            padding: 13px 24px;
+            border-radius: var(--border-radius-md);
+            font-family: var(--font-fa);
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: all var(--transition-fast);
+        }
+        .check-answer-btn:active { transform: scale(0.97); }
+
+        .feedback {
+            padding: 12px 14px;
+            border-radius: var(--border-radius-sm);
+            margin-top: 10px;
+            font-size: 0.85rem;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .feedback.ok {
+            display: block;
+            background: rgba(48, 209, 88, 0.1);
+            color: var(--accent-green);
+            border: 1px solid rgba(48, 209, 88, 0.2);
+        }
+        .feedback.no {
+            display: block;
+            background: rgba(255, 69, 58, 0.1);
+            color: var(--accent-red);
+            border: 1px solid rgba(255, 69, 58, 0.2);
+        }
+
+        /* ====== SCORES PAGE ====== */
+        .my-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .my-stat { padding: 18px; text-align: center; }
+        .my-stat .ms-num {
+            font-size: 1.7rem;
+            font-weight: 800;
+            font-family: var(--font-en);
+        }
+        .my-stat .ms-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .lb-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            margin-bottom: 6px;
+        }
+        .lb-rank {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800;
+            font-family: var(--font-en);
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        .lb-rank.r1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #fff; }
+        .lb-rank.r2 { background: linear-gradient(135deg, #C0C0C0, #999); color: #fff; }
+        .lb-rank.r3 { background: linear-gradient(135deg, #CD7F32, #A0522D); color: #fff; }
+        .lb-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            background: var(--bg-glass);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .lb-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .lb-info { flex: 1; }
+        .lb-name { font-weight: 600; font-size: 0.92rem; }
+        .lb-level { font-size: 0.72rem; color: var(--text-secondary); }
+        .lb-score { font-weight: 800; font-family: var(--font-en); color: var(--accent-orange); font-size: 0.92rem; }
+
+        /* ====== PROFILE PAGE ====== */
+        .profile-hero {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+        }
+        .profile-avatar {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3rem;
+            overflow: hidden;
+            position: relative;
+        }
+        .profile-avatar.gradient-bg {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-pink));
+        }
+        .profile-avatar img {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile-avatar .avatar-ring {
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+        .profile-name { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
+        .profile-email { font-size: 0.82rem; color: var(--text-secondary); }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .ps-item { text-align: center; padding: 14px 8px; }
+        .ps-num {
+            font-size: 1.3rem;
+            font-weight: 800;
+            font-family: var(--font-en);
+        }
+        .ps-label {
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .google-sign-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--border-radius-lg);
+            background: var(--bg-secondary);
+            border: 1px solid var(--bg-glass-border);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: var(--font-fa);
+            box-shadow: var(--shadow-glass);
+        }
+        .google-sign-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-glass-lg); }
+        .google-sign-btn:active { transform: scale(0.98); }
+        .google-sign-btn svg { width: 22px; height: 22px; }
+
+        .sign-out-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--border-radius-md);
+            background: rgba(255, 69, 58, 0.1);
+            border: 1px solid rgba(255, 69, 58, 0.2);
+            color: var(--accent-red);
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-fa);
+            margin-top: 16px;
+            transition: all var(--transition-fast);
+        }
+        .sign-out-btn:active { transform: scale(0.97); }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+        }
+        .loading-overlay .spinner {
+            width: 40px; height: 40px;
+            border: 4px solid var(--bg-glass-border);
+            border-top-color: var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ====== SETTINGS ====== */
+        .settings-group { margin-bottom: 22px; }
+        .sg-title {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            padding: 0 6px;
+        }
+        .sg-list {
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--bg-glass-border);
+        }
+        .s-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 18px;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+            border-bottom: 1px solid var(--bg-glass-border);
+        }
+        .s-item:last-child { border-bottom: none; }
+        .s-item:active { background: var(--bg-glass-active); }
+        .s-left { display: flex; align-items: center; gap: 12px; }
+        .s-icon {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem;
+        }
+        .s-label { font-size: 0.92rem; }
+        .s-value {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Toggle */
+        .toggle {
+            width: 50px; height: 30px;
+            border-radius: 15px;
+            background: var(--bg-quaternary);
+            position: relative;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .toggle.on { background: var(--accent-green); }
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background: #fff;
+            top: 3px; left: 3px;
+            transition: left var(--transition-fast);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .toggle.on::after { left: 23px; }
+
+        /* ====== TOAST ====== */
+        .toast {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-120px);
+            background: var(--bg-secondary);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--bg-glass-border);
+            border-radius: var(--border-radius-md);
+            padding: 13px 22px;
+            font-size: 0.88rem;
+            z-index: 6000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--shadow-glass-lg);
+            max-width: 340px;
+            text-align: center;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ====== SCROLLBAR ====== */
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--bg-quaternary); border-radius: 2px; }
+
+        @media (max-width: 380px) {
+            .level-grid { grid-template-columns: 1fr; }
+            .section-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+<div class="toast" id="toast"></div>
+<div class="loading-overlay" id="loadingOverlay" style="display:none">
+    <div class="spinner"></div>
+</div>
+
+<div id="app">
+    <!-- HEADER -->
+    <header class="app-header">
+        <div class="header-content">
+            <button class="header-btn back-btn hidden" id="backBtn" onclick="goBack()">
+                → بازگشت
+            </button>
+            <h1 class="header-title" id="headerTitle">German App</h1>
+            <div class="header-right">
+                <button class="header-btn" id="headerAction">🔔</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== HOME ========== -->
+    <div class="page active" id="page-home">
+        <div class="welcome-banner">
+            <h1>!Willkommen</h1>
+            <p class="welcome-sub">به اپلیکیشن یادگیری زبان آلمانی خوش آمدید</p>
+            <div class="welcome-user" id="welcomeUser" style="display:none">
+                <div class="user-mini-avatar" id="welcomeAvatar">👤</div>
+                <span class="user-mini-name" id="welcomeName"></span>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card glass">
+                <div class="stat-emoji">🔥</div>
+                <div class="stat-value" id="statStreak">0</div>
+                <div class="stat-label">روز متوالی</div>
+            </div>
+            <div class="stat-card glass">
+                <div class="stat-emoji">⭐</div>
+                <div class="stat-value" id="statXP">0</div>
+                <div class="stat-label">امتیاز</div>
+            </div>
+            <div class="stat-card glass">
+                <div class="stat-emoji">📚</div>
+                <div class="stat-value" id="statDone">0</div>
+                <div class="stat-label">درس تمام شده</div>
+            </div>
+        </div>
+
+        <h2 class="sec-title">📖 سطوح کتاب Menschen</h2>
+        <div class="level-grid" id="levelGrid"></div>
+    </div>
+
+    <!-- ========== LESSONS LIST ========== -->
+    <div class="page" id="page-lessons">
+        <h2 class="sec-title" id="lessonsTitle"></h2>
+        <div class="level-prog-bar"><div class="level-prog-fill" id="lessonsProg" style="width:0%"></div></div>
+        <p style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:18px" id="lessonsProgText"></p>
+        <div class="lesson-list" id="lessonList"></div>
+    </div>
+
+    <!-- ========== LESSON DETAIL ========== -->
+    <div class="page" id="page-detail">
+        <div class="lesson-hero" id="lessonHero">
+            <h2 id="detailTitle"></h2>
+            <p id="detailSub"></p>
+        </div>
+        <div class="section-grid" id="sectionGrid"></div>
+    </div>
+
+    <!-- ========== SECTION CONTENT ========== -->
+    <div class="page" id="page-section">
+        <div class="tabs" id="sectionTabs"></div>
+        <div id="sectionBody"></div>
+    </div>
+
+    <!-- ========== SCORES ========== -->
+    <div class="page" id="page-scores">
+        <h2 class="sec-title">🏆 جدول امتیازات</h2>
+        <div class="my-stats-grid">
+            <div class="my-stat glass">
+                <div class="ms-num" style="color:var(--accent-orange)" id="scXP">0</div>
+                <div class="ms-label">امتیاز کل</div>
+            </div>
+            <div class="my-stat glass">
+                <div class="ms-num" style="color:var(--accent-green)" id="scRank">#1</div>
+                <div class="ms-label">رتبه شما</div>
+            </div>
+            <div class="my-stat glass">
+                <div class="ms-num" style="color:var(--accent-purple)" id="scCorrect">0</div>
+                <div class="ms-label">پاسخ صحیح</div>
+            </div>
+            <div class="my-stat glass">
+                <div class="ms-num" style="color:var(--accent-blue)" id="scWords">0</div>
+                <div class="ms-label">واژه آموخته</div>
+            </div>
+        </div>
+        <h3 class="sec-title">👑 برترین‌ها</h3>
+        <div id="leaderboard"></div>
+    </div>
+
+    <!-- ========== ONLINE / PROFILE ========== -->
+    <div class="page" id="page-online">
+        <div id="viewLoggedOut">
+            <div class="profile-hero glass">
+                <div class="profile-avatar gradient-bg">
+                    <span>👤</span>
+                </div>
+                <h2 class="profile-name">ورود به حساب کاربری</h2>
+                <p class="profile-email">برای ذخیره پیشرفت و رقابت آنلاین وارد شوید</p>
+            </div>
+
+            <button class="google-sign-btn" onclick="googleSignIn()">
+                <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                ورود با حساب گوگل
+            </button>
+
+            <div style="text-align:center;margin-top:20px;color:var(--text-tertiary);font-size:0.78rem">
+                با ورود، اطلاعات پیشرفت شما در فایربیس ذخیره می‌شود
+            </div>
+        </div>
+
+        <div id="viewLoggedIn" style="display:none">
+            <div class="profile-hero glass">
+                <div class="profile-avatar" id="profAvatar">
+                    <div class="avatar-ring"></div>
+                    <span id="profAvatarContent">👤</span>
+                </div>
+                <h2 class="profile-name" id="profName">کاربر</h2>
+                <p class="profile-email" id="profEmail">email@gmail.com</p>
+            </div>
+
+            <div class="profile-stats">
+                <div class="ps-item glass">
+                    <div class="ps-num" style="color:var(--accent-blue)" id="profLevel">A1.1</div>
+                    <div class="ps-label">سطح فعلی</div>
+                </div>
+                <div class="ps-item glass">
+                    <div class="ps-num" style="color:var(--accent-green)" id="profProgress">0%</div>
+                    <div class="ps-label">پیشرفت</div>
+                </div>
+                <div class="ps-item glass">
+                    <div class="ps-num" style="color:var(--accent-orange)" id="profXP">0</div>
+                    <div class="ps-label">امتیاز</div>
+                </div>
+            </div>
+
+            <div class="glass" style="padding:16px;margin-bottom:12px">
+                <div class="sec-title" style="margin-bottom:12px;font-size:0.95rem">📊 آمار یادگیری</div>
+                <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:8px">
+                    <span style="color:var(--text-secondary)">دروس تکمیل شده</span>
+                    <span style="font-weight:700;font-family:var(--font-en)" id="profLessons">0</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:8px">
+                    <span style="color:var(--text-secondary)">واژه‌های آموخته</span>
+                    <span style="font-weight:700;font-family:var(--font-en)" id="profWords">0</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:8px">
+                    <span style="color:var(--text-secondary)">پاسخ‌های صحیح</span>
+                    <span style="font-weight:700;font-family:var(--font-en)" id="profCorrect">0</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:0.85rem">
+                    <span style="color:var(--text-secondary)">روز متوالی</span>
+                    <span style="font-weight:700;font-family:var(--font-en)" id="profStreak">0</span>
+                </div>
+            </div>
+
+            <button class="sign-out-btn" onclick="googleSignOut()">🚪 خروج از حساب کاربری</button>
+        </div>
+    </div>
+
+    <!-- ========== SETTINGS ========== -->
+    <div class="page" id="page-settings">
+        <h2 class="sec-title">⚙️ تنظیمات</h2>
+
+        <div class="settings-group">
+            <div class="sg-title">ظاهر برنامه</div>
+            <div class="sg-list">
+                <div class="s-item" onclick="toggleDarkMode()">
+                    <div class="s-left">
+                        <div class="s-icon" style="background:#0a84ff">🌙</div>
+                        <span class="s-label">حالت تاریک</span>
+                    </div>
+                    <div class="toggle on" id="togDark"></div>
+                </div>
+                <div class="s-item" onclick="cycleFont()">
+                    <div class="s-left">
+                        <div class="s-icon" style="background:#bf5af2">🔤</div>
+                        <span class="s-label">اندازه فونت</span>
+                    </div>
+                    <div class="s-value" id="valFont">متوسط ←</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <div class="sg-title">صدا و تلفظ</div>
+            <div class="sg-list">
+                <div class="s-item" onclick="toggleSnd()">
+                    <div class="s-left">
+                        <div class="s-icon" style="background:#30d158">🔊</div>
+                        <span class="s-label">صدای تلفظ</span>
+                    </div>
+                    <div class="toggle on" id="togSound"></div>
+                </div>
+                <div class="s-item" onclick="toggleAuto()">
+                    <div class="s-left">
+                        <div class="s-icon" style="background:#ff9f0a">▶️</div>
+                        <span class="s-label">پخش خودکار صدا</span>
+                    </div>
+                    <div class="toggle" id="togAuto"></div>
+                </div>
+                <div class="s-item" onclick="cycleRate()">
+                    <div class="s-left">
+                        <div class="s-icon" style="background:#64d2ff">⏩</div>
+                        <span class="s-label">سرعت تلفظ</span>
+                    </div>
+                    <div class="s-value" id="valRate">عادی ←</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <div class="sg-title">یادگیری</div>
+            <div class="sg-list">
+                <div class="s-item" onclick="toggleNotif()">
+                    <div class="s-left">
+                        <div class="s-icon" style="background:#ff375f">🔔</div>
+                        <span class="s-label">یادآوری روزانه</span>
+                    </div>
+                    <div class="toggle on" id="togNotif"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <div class="sg-title">داده‌ها</div>
+            <div class="sg-list">
+                <div class="s-item" onclick="resetAll()">
+                    <div class="s-left">
+                        <div class="s-icon" style="background:#ff453a">🗑️</div>
+                        <span class="s-label" style="color:var(--accent-red)">پاک کردن همه پیشرفت</span>
+                    </div>
+                    <div class="s-value">←</div>
+                </div>
+                <div class="s-item">
+                    <div class="s-left">
+                        <div class="s-icon" style="background:var(--bg-quaternary)">ℹ️</div>
+                        <span class="s-label">نسخه</span>
+                    </div>
+                    <div class="s-value">2.0.0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-nav="home" onclick="navTo('home')">
+            <span class="nav-icon">🏠</span><span class="nav-label">خانه</span>
+        </button>
+        <button class="nav-item" data-nav="scores" onclick="navTo('scores')">
+            <span class="nav-icon">🏆</span><span class="nav-label">امتیازات</span>
+        </button>
+        <button class="nav-item" data-nav="online" onclick="navTo('online')">
+            <span class="nav-icon">👤</span><span class="nav-label">پروفایل</span>
+        </button>
+        <button class="nav-item" data-nav="settings" onclick="navTo('settings')">
+            <span class="nav-icon">⚙️</span><span class="nav-label">تنظیمات</span>
+        </button>
+    </nav>
+</div>
+
+<script>
+    // ============================================
+    // FIREBASE CONFIGURATION
+    // ============================================
+    // ⚠️ شما باید این مقادیر را با اطلاعات پروژه Firebase خودتان جایگزین کنید
+    // مراحل:
+    // 1. به console.firebase.google.com بروید
+    // 2. یک پروژه بسازید
+    // 3. Authentication را فعال کنید و Google Sign-In را اضافه کنید
+    // 4. Firestore Database بسازید
+    // 5. مقادیر config را از Project Settings کپی کنید
+
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    let firebaseApp, auth, db, googleProvider;
+    let firebaseReady = false;
+
+    try {
+        firebaseApp = firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth();
+        db = firebase.firestore();
+        googleProvider = new firebase.auth.GoogleAuthProvider();
+        googleProvider.addScope('profile');
+        googleProvider.addScope('email');
+        firebaseReady = true;
+        console.log('فایربیس با موفقیت راه‌اندازی شد');
+    } catch(e) {
+        console.warn('خطا در راه‌اندازی فایربیس:', e.message);
+        firebaseReady = false;
+    }
+
+    // ============================================
+    // COMPLETE BOOK DATA (Menschen)
+    // ============================================
+    const DATA = {
+    "a1-1": {
+        name:"A1.1", full:"Menschen A1.1", icon:"🌱", desc:"مبتدی - بخش اول", color:"#30d158",
+        lessons:[
+            {
+                id:1, title:"Hallo! Ich bin Nicole", sub:"سلام و معرفی خود",
+                explanation: { title:"معرفی خود و دیگران", blocks:[
+                    { heading:"موضوع درس", text:"در این درس یاد می‌گیرید خود را معرفی کنید، نام و کشورتان را بگویید و سلام و احوالپرسی کنید. همچنین تفاوت خطاب رسمی (Sie) و غیررسمی (du) را یاد می‌گیرید." },
+                    { heading:"مکالمه نمونه", dialog:[
+                        {speaker:"Nicole",text:"Hallo! Ich bin Nicole. Und wie heißt du?"},
+                        {speaker:"Mehdi",text:"Hallo! Ich heiße Mehdi."},
+                        {speaker:"Nicole",text:"Woher kommst du?"},
+                        {speaker:"Mehdi",text:"Ich komme aus dem Iran. Und du?"},
+                        {speaker:"Nicole",text:"Ich komme aus Deutschland."},
+                        {speaker:"Mehdi",text:"Welche Sprachen sprichst du?"},
+                        {speaker:"Nicole",text:"Ich spreche Deutsch und Englisch."}
+                    ]},
+                    { heading:"نکته مهم", text:"در آلمانی du برای دوستان و آشنایان و Sie (با حرف بزرگ) برای موقعیت‌های رسمی استفاده می‌شود. فعل بعد از Sie مثل sie (آنها) صرف می‌شود." },
+                    { heading:"حالت رسمی", dialog:[
+                        {speaker:"Herr M.",text:"Guten Tag! Wie heißen Sie?"},
+                        {speaker:"Frau S.",text:"Ich heiße Anna Schmidt. Und Sie?"},
+                        {speaker:"Herr M.",text:"Ich bin Thomas Müller. Woher kommen Sie?"},
+                        {speaker:"Frau S.",text:"Aus Österreich."}
+                    ]}
+                ]},
+                grammar: { title:"ضمایر شخصی و فعل‌های sein، heißen، kommen", blocks:[
+                    { heading:"ضمایر شخصی", table:{ headers:["آلمانی","فارسی","نمونه"], rows:[
+                        ["ich","من","Ich bin Mehdi."],["du","تو","Du bist nett."],
+                        ["er","او (مرد)","Er ist groß."],["sie","او (زن)","Sie ist klein."],
+                        ["es","آن","Es ist gut."],["wir","ما","Wir sind hier."],
+                        ["ihr","شما (غیررسمی جمع)","Ihr seid nett."],["sie/Sie","آنها / شما (رسمی)","Sie sind freundlich."]
+                    ]}},
+                    { heading:"صرف فعل sein (بودن)", table:{ headers:["ضمیر","فعل","مثال"], rows:[
+                        ["ich","bin","Ich bin Student."],["du","bist","Du bist nett."],
+                        ["er/sie/es","ist","Er ist Lehrer."],["wir","sind","Wir sind Freunde."],
+                        ["ihr","seid","Ihr seid toll."],["sie/Sie","sind","Sie sind aus Wien."]
+                    ]}},
+                    { heading:"صرف فعل heißen (نام داشتن)", table:{ headers:["ضمیر","فعل","مثال"], rows:[
+                        ["ich","heiße","Ich heiße Mehdi."],["du","heißt","Wie heißt du?"],
+                        ["er/sie/es","heißt","Sie heißt Anna."],["wir","heißen","Wir heißen Müller."],
+                        ["ihr","heißt","Wie heißt ihr?"],["sie/Sie","heißen","Wie heißen Sie?"]
+                    ]}},
+                    { heading:"صرف فعل kommen (آمدن)", table:{ headers:["ضمیر","فعل","مثال"], rows:[
+                        ["ich","komme","Ich komme aus dem Iran."],["du","kommst","Woher kommst du?"],
+                        ["er/sie/es","kommt","Er kommt aus Berlin."],["wir","kommen","Wir kommen aus Wien."],
+                        ["ihr","kommt","Woher kommt ihr?"],["sie/Sie","kommen","Woher kommen Sie?"]
+                    ]}},
+                    { heading:"جمله پرسشی با W-Frage", text:"فعل همیشه در جایگاه دوم:", examples:[
+                        {de:"Wie heißt du?",fa:"اسمت چیه؟"},
+                        {de:"Woher kommst du?",fa:"از کجا میای؟"},
+                        {de:"Wo wohnst du?",fa:"کجا زندگی می‌کنی؟"}
+                    ]},
+                    { heading:"جمله پرسشی بله/خیر", text:"فعل در جایگاه اول:", examples:[
+                        {de:"Bist du Mehdi?",fa:"تو مهدی هستی؟"},
+                        {de:"Kommst du aus dem Iran?",fa:"از ایران میای؟"}
+                    ]}
+                ]},
+                vocabulary:[
+                    {word:"hallo",article:"",plural:"",trans:"سلام",ex:"Hallo, wie geht's?",exFa:"سلام، حالت چطوره؟"},
+                    {word:"guten Tag",article:"",plural:"",trans:"روز بخیر",ex:"Guten Tag, Herr Müller!",exFa:"روز بخیر آقای مولر!"},
+                    {word:"guten Morgen",article:"",plural:"",trans:"صبح بخیر",ex:"Guten Morgen! Wie geht es Ihnen?",exFa:"صبح بخیر! حالتان چطور است؟"},
+                    {word:"guten Abend",article:"",plural:"",trans:"عصر بخیر",ex:"Guten Abend zusammen!",exFa:"عصر همگی بخیر!"},
+                    {word:"tschüs",article:"",plural:"",trans:"خداحافظ (غیررسمی)",ex:"Tschüs, bis morgen!",exFa:"خداحافظ، تا فردا!"},
+                    {word:"auf Wiedersehen",article:"",plural:"",trans:"خداحافظ (رسمی)",ex:"Auf Wiedersehen!",exFa:"خداحافظ!"},
+                    {word:"Name",article:"der",plural:"die Namen",trans:"اسم",ex:"Mein Name ist Mehdi.",exFa:"اسم من مهدی است."},
+                    {word:"Frau",article:"die",plural:"die Frauen",trans:"خانم",ex:"Frau Müller ist Lehrerin.",exFa:"خانم مولر معلم است."},
+                    {word:"Herr",article:"der",plural:"die Herren",trans:"آقا",ex:"Herr Schmidt kommt aus Berlin.",exFa:"آقای اشمیت از برلین می‌آید."},
+                    {word:"Land",article:"das",plural:"die Länder",trans:"کشور",ex:"Aus welchem Land kommst du?",exFa:"از چه کشوری می‌آیی؟"},
+                    {word:"Sprache",article:"die",plural:"die Sprachen",trans:"زبان",ex:"Welche Sprache sprichst du?",exFa:"چه زبانی صحبت می‌کنی؟"},
+                    {word:"Deutsch",article:"",plural:"",trans:"آلمانی",ex:"Ich lerne Deutsch.",exFa:"من آلمانی یاد می‌گیرم."},
+                    {word:"Englisch",article:"",plural:"",trans:"انگلیسی",ex:"Sie spricht Englisch.",exFa:"او انگلیسی صحبت می‌کند."},
+                    {word:"kommen",article:"",plural:"",trans:"آمدن",ex:"Ich komme aus dem Iran.",exFa:"من از ایران می‌آیم."},
+                    {word:"heißen",article:"",plural:"",trans:"نام داشتن",ex:"Wie heißen Sie?",exFa:"اسم شما چیست؟"},
+                    {word:"sprechen",article:"",plural:"",trans:"صحبت کردن",ex:"Er spricht drei Sprachen.",exFa:"او سه زبان صحبت می‌کند."},
+                    {word:"wohnen",article:"",plural:"",trans:"زندگی کردن",ex:"Ich wohne in Berlin.",exFa:"من در برلین زندگی می‌کنم."},
+                    {word:"lernen",article:"",plural:"",trans:"یاد گرفتن",ex:"Wir lernen Deutsch.",exFa:"ما آلمانی یاد می‌گیریم."},
+                    {word:"sein",article:"",plural:"",trans:"بودن",ex:"Ich bin Student.",exFa:"من دانشجو هستم."},
+                    {word:"und",article:"",plural:"",trans:"و",ex:"Ich spreche Deutsch und Englisch.",exFa:"من آلمانی و انگلیسی صحبت می‌کنم."},
+                    {word:"auch",article:"",plural:"",trans:"هم، همچنین",ex:"Ich komme auch aus dem Iran.",exFa:"من هم از ایران می‌آیم."},
+                    {word:"ja",article:"",plural:"",trans:"بله",ex:"Ja, ich spreche Deutsch.",exFa:"بله، آلمانی صحبت می‌کنم."},
+                    {word:"nein",article:"",plural:"",trans:"خیر",ex:"Nein, ich bin nicht müde.",exFa:"نه، خسته نیستم."},
+                    {word:"nicht",article:"",plural:"",trans:"نه (نفی)",ex:"Er ist nicht hier.",exFa:"او اینجا نیست."},
+                    {word:"wie",article:"",plural:"",trans:"چطور / چگونه",ex:"Wie heißt du?",exFa:"اسمت چیه؟"},
+                    {word:"woher",article:"",plural:"",trans:"از کجا",ex:"Woher kommst du?",exFa:"از کجا میای؟"},
+                    {word:"wo",article:"",plural:"",trans:"کجا",ex:"Wo wohnst du?",exFa:"کجا زندگی می‌کنی؟"},
+                    {word:"aus",article:"",plural:"",trans:"از",ex:"Ich komme aus Teheran.",exFa:"من از تهران می‌آیم."},
+                    {word:"in",article:"",plural:"",trans:"در",ex:"Ich wohne in München.",exFa:"من در مونیخ زندگی می‌کنم."}
+                ],
+                exercises:[
+                    {type:"mc",q:"«من مهدی هستم» به آلمانی چه می‌شود؟",opts:["Ich bin Mehdi.","Ich heiße Mehdi.","هر دو درست است.","Ich komme Mehdi."],ans:2},
+                    {type:"mc",q:"Wie _____ du?",opts:["heißt","heiße","heißen","heißt ihr"],ans:0},
+                    {type:"mc",q:"Woher _____ Sie?",opts:["kommst","kommt","kommen","komme"],ans:2},
+                    {type:"mc",q:"Er _____ aus Berlin.",opts:["komme","kommst","kommt","kommen"],ans:2},
+                    {type:"mc",q:"_____ du Deutsch?",opts:["Sprichst","Spreche","Sprecht","Sprechen"],ans:0},
+                    {type:"mc",q:"Wir _____ Studenten.",opts:["bin","bist","ist","sind"],ans:3},
+                    {type:"mc",q:"Ich _____ in München.",opts:["wohne","wohnst","wohnt","wohnen"],ans:0},
+                    {type:"fill",q:'Ich _____ Anna. (heißen)',a:"heiße"},
+                    {type:"fill",q:'Woher _____ du? (kommen)',a:"kommst"},
+                    {type:"fill",q:'Er _____ Lehrer. (sein)',a:"ist"},
+                    {type:"mc",q:"کدام یک سلام رسمی است؟",opts:["Hallo!","Guten Tag!","Hi!","Tschüs!"],ans:1},
+                    {type:"mc",q:"Auf Wiedersehen یعنی چه؟",opts:["سلام","خداحافظ (رسمی)","صبح بخیر","شب بخیر"],ans:1}
+                ]
+            },
+            // Lessons 2-12 abbreviated but with full structure
+            {id:2,title:"Ich bin Journalistin",sub:"شغل‌ها و حرفه‌ها",
+                explanation:{title:"معرفی شغل",blocks:[{heading:"موضوع",text:"یاد می‌گیرید شغلتان را بگویید و فرق مذکر/مؤنث شغل‌ها را بدانید. مثلاً Lehrer (معلم مرد) و Lehrerin (معلم زن)."},{heading:"مکالمه",dialog:[{speaker:"A",text:"Was bist du von Beruf?"},{speaker:"B",text:"Ich bin Journalistin."},{speaker:"A",text:"Wo arbeitest du?"},{speaker:"B",text:"Ich arbeite bei einer Zeitung."}]}]},
+                grammar:{title:"فعل arbeiten - مذکر و مؤنث شغل",blocks:[{heading:"صرف arbeiten",table:{headers:["ضمیر","فعل"],rows:[["ich","arbeite"],["du","arbeitest"],["er/sie","arbeitet"],["wir","arbeiten"],["ihr","arbeitet"],["sie/Sie","arbeiten"]]}},{heading:"شغل‌ها مذکر/مؤنث",table:{headers:["مذکر","مؤنث","فارسی"],rows:[["Lehrer","Lehrerin","معلم"],["Arzt","Ärztin","پزشک"],["Student","Studentin","دانشجو"],["Ingenieur","Ingenieurin","مهندس"],["Koch","Köchin","آشپز"]]}}]},
+                vocabulary:[
+                    {word:"Beruf",article:"der",plural:"die Berufe",trans:"شغل",ex:"Was ist dein Beruf?",exFa:"شغلت چیه؟"},
+                    {word:"Arzt",article:"der",plural:"die Ärzte",trans:"پزشک (مرد)",ex:"Er ist Arzt.",exFa:"او پزشک است."},
+                    {word:"Ärztin",article:"die",plural:"die Ärztinnen",trans:"پزشک (زن)",ex:"Sie ist Ärztin.",exFa:"او پزشک است."},
+                    {word:"Lehrer",article:"der",plural:"die Lehrer",trans:"معلم (مرد)",ex:"Mein Vater ist Lehrer.",exFa:"پدرم معلم است."},
+                    {word:"Lehrerin",article:"die",plural:"die Lehrerinnen",trans:"معلم (زن)",ex:"Frau Müller ist Lehrerin.",exFa:"خانم مولر معلم است."},
+                    {word:"arbeiten",article:"",plural:"",trans:"کار کردن",ex:"Ich arbeite bei BMW.",exFa:"من در بی‌ام‌و کار می‌کنم."},
+                    {word:"Krankenhaus",article:"das",plural:"die Krankenhäuser",trans:"بیمارستان",ex:"Sie arbeitet im Krankenhaus.",exFa:"او در بیمارستان کار می‌کند."},
+                    {word:"Schule",article:"die",plural:"die Schulen",trans:"مدرسه",ex:"Er arbeitet in einer Schule.",exFa:"او در مدرسه کار می‌کند."}
+                ],
+                exercises:[
+                    {type:"mc",q:"Was bist du von _____?",opts:["Beruf","Arbeit","Name","Land"],ans:0},
+                    {type:"mc",q:"مؤنث Arzt چیست؟",opts:["Arztin","Ärztin","Arzte","Ärzte"],ans:1},
+                    {type:"fill",q:"Sie _____ Lehrerin. (sein)",a:"ist"},
+                    {type:"mc",q:"Ich _____ als Ingenieur.",opts:["arbeite","arbeitest","arbeitet","arbeiten"],ans:0}
+                ]
+            },
+            {id:3,title:"Das ist mein Bruder",sub:"خانواده و ضمایر ملکی",
+                explanation:{title:"خانواده",blocks:[{heading:"موضوع",text:"اعضای خانواده و ضمایر ملکی mein/dein/sein/ihr."},{heading:"مکالمه",dialog:[{speaker:"Lisa",text:"Hast du Geschwister?"},{speaker:"Tom",text:"Ja, mein Bruder heißt Max."}]}]},
+                grammar:{title:"فعل haben و ضمایر ملکی",blocks:[{heading:"صرف haben",table:{headers:["ضمیر","فعل"],rows:[["ich","habe"],["du","hast"],["er/sie","hat"],["wir","haben"],["ihr","habt"],["sie/Sie","haben"]]}},{heading:"ضمایر ملکی",table:{headers:["ضمیر","مذکر/خنثی","مؤنث/جمع"],rows:[["ich","mein","meine"],["du","dein","deine"],["er","sein","seine"],["sie","ihr","ihre"]]}}]},
+                vocabulary:[
+                    {word:"Familie",article:"die",plural:"die Familien",trans:"خانواده",ex:"Meine Familie ist groß.",exFa:"خانواده‌ام بزرگ است."},
+                    {word:"Vater",article:"der",plural:"die Väter",trans:"پدر",ex:"Mein Vater ist 50.",exFa:"پدرم ۵۰ ساله است."},
+                    {word:"Mutter",article:"die",plural:"die Mütter",trans:"مادر",ex:"Meine Mutter kocht gern.",exFa:"مادرم دوست دارد آشپزی کند."},
+                    {word:"Bruder",article:"der",plural:"die Brüder",trans:"برادر",ex:"Mein Bruder heißt Ali.",exFa:"برادرم اسمش علی است."},
+                    {word:"Schwester",article:"die",plural:"die Schwestern",trans:"خواهر",ex:"Meine Schwester ist Ärztin.",exFa:"خواهرم پزشک است."},
+                    {word:"Kind",article:"das",plural:"die Kinder",trans:"بچه",ex:"Sie hat zwei Kinder.",exFa:"او دو بچه دارد."},
+                    {word:"Eltern",article:"die",plural:"",trans:"والدین",ex:"Meine Eltern wohnen in Teheran.",exFa:"والدینم در تهران زندگی می‌کنند."},
+                    {word:"verheiratet",article:"",plural:"",trans:"متأهل",ex:"Er ist verheiratet.",exFa:"او متأهل است."}
+                ],
+                exercises:[
+                    {type:"mc",q:"Ich _____ zwei Brüder.",opts:["habe","hast","hat","haben"],ans:0},
+                    {type:"mc",q:"_____ Schwester heißt Mina.",opts:["Mein","Meine","Meinen","Meiner"],ans:1},
+                    {type:"fill",q:"Er _____ eine Tochter. (haben)",a:"hat"}
+                ]
+            },
+            // Lessons 4-12 with minimal but complete structure
+            ...[
+                {id:4,title:"Der Tisch ist schön!",sub:"اشیاء، رنگ‌ها و حرف تعریف"},
+                {id:5,title:"Was ist das?",sub:"اعداد و الفبا"},
+                {id:6,title:"Ich brauche kein Auto",sub:"Akkusativ و نیازها"},
+                {id:7,title:"Du kannst wirklich toll...!",sub:"فعل مودال können"},
+                {id:8,title:"Kein Problem. Ich habe Zeit!",sub:"ساعت و روزهای هفته"},
+                {id:9,title:"Ich möchte ...",sub:"سفارش دادن با möchten"},
+                {id:10,title:"Ich steige jetzt aus",sub:"فعل‌های جداشدنی"},
+                {id:11,title:"Was hast du gemacht?",sub:"زمان Perfekt"},
+                {id:12,title:"Was ist passiert?",sub:"Perfekt فعل‌های بی‌قاعده"}
+            ].map(l => ({
+                ...l,
+                explanation:{title:l.sub,blocks:[{heading:"موضوع درس",text:`در درس ${l.id} با موضوع «${l.sub}» آشنا می‌شوید. محتوای کامل به زودی اضافه خواهد شد.`}]},
+                grammar:{title:"گرامر درس "+l.id,blocks:[{heading:"قواعد دستوری",text:"محتوای گرامر به زودی تکمیل می‌شود."}]},
+                vocabulary:[{word:"Beispiel",article:"das",plural:"die Beispiele",trans:"مثال",ex:"Das ist ein Beispiel.",exFa:"این یک مثال است."}],
+                exercises:[{type:"mc",q:"تمرین نمونه",opts:["گزینه ۱","گزینه ۲","گزینه ۳","گزینه ۴"],ans:0}]
+            }))
+        ]
+    },
+    // Other levels
+    ...Object.fromEntries(
+        [["a1-2","A1.2","Menschen A1.2","🌿","مبتدی - بخش دوم","#64d2ff"],
+         ["a2-1","A2.1","Menschen A2.1","🌳","پایه - بخش اول","#0a84ff"],
+         ["a2-2","A2.2","Menschen A2.2","🌲","پایه - بخش دوم","#bf5af2"],
+         ["b1-1","B1.1","Menschen B1.1","🏔️","متوسط - بخش اول","#ff9f0a"],
+         ["b1-2","B1.2","Menschen B1.2","⛰️","متوسط - بخش دوم","#ff375f"],
+         ["b2-1","B2.1","Menschen B2.1","🏆","پیشرفته - بخش اول","#ff453a"],
+         ["b2-2","B2.2","Menschen B2.2","👑","پیشرفته - بخش دوم","#ffd60a"]
+        ].map(([k,n,f,i,d,c]) => [k, {
+            name:n, full:f, icon:i, desc:d, color:c,
+            lessons: Array.from({length:12},(_,idx)=>({
+                id:idx+1, title:`Lektion ${idx+1}`, sub:`درس ${idx+1} - ${n}`,
+                explanation:{title:`درس ${idx+1}`,blocks:[{heading:"موضوع",text:"محتوای این درس به زودی اضافه می‌شود."}]},
+                grammar:{title:"گرامر",blocks:[{heading:"قواعد",text:"محتوای گرامر به زودی اضافه می‌شود."}]},
+                vocabulary:[{word:"Wort",article:"das",plural:"die Wörter",trans:"کلمه",ex:"Das ist ein Wort.",exFa:"این یک کلمه است."}],
+                exercises:[{type:"mc",q:"تمرین نمونه",opts:["الف","ب","ج","د"],ans:0}]
+            }))
+        }])
+    )
+    };
+
+    // ============================================
+    // APP STATE
+    // ============================================
+    let state = {
+        page: 'home',
+        level: null,
+        lesson: null,
+        section: null,
+        navStack: [], // ← مهم: استک ناوبری برای دکمه بازگشت
+        user: null,
+        settings: { dark:true, sound:true, auto:false, rate:1, font:'medium', notif:true },
+        progress: {},
+        xp: 0, streak: 0, correct: 0, words: 0
+    };
+
+    function load() {
+        try {
+            const s = JSON.parse(localStorage.getItem('ga_state'));
+            if(s) { state = {...state,...s}; applyTheme(); }
+        } catch(e){}
+    }
+
+    function save() {
+        try {
+            localStorage.setItem('ga_state', JSON.stringify({
+                settings:state.settings, progress:state.progress,
+                xp:state.xp, streak:state.streak, correct:state.correct, words:state.words
+            }));
+            // ذخیره در فایربیس اگر وارد شده
+            if(state.user && firebaseReady) {
+                db.collection('users').doc(state.user.uid).set({
+                    progress:state.progress, xp:state.xp, streak:state.streak,
+                    correct:state.correct, words:state.words,
+                    displayName: state.user.displayName,
+                    photoURL: state.user.photoURL
+                }, {merge:true}).catch(e => console.warn('خطا در ذخیره فایربیس:', e));
+            }
+        } catch(e){}
+    }
+
+    function applyTheme() {
+        document.body.setAttribute('data-theme', state.settings.dark ? 'dark' : 'light');
+        const t = document.getElementById('togDark');
+        if(t) t.classList.toggle('on', state.settings.dark);
+        const sizes = {small:'14px',medium:'16px',large:'18px'};
+        document.documentElement.style.fontSize = sizes[state.settings.font]||'16px';
+    }
+
+    // ============================================
+    // NAVIGATION - اصلاح شده بدون خروج از برنامه
+    // ============================================
+    function navTo(page) {
+        // ذخیره وضعیت قبلی فقط اگر از صفحات اصلی نباشد
+        state.navStack = [];
+        state.level = null;
+        state.lesson = null;
+        state.section = null;
+
+        showPage(page);
+
+        // آپدیت منوی پایین
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        const nav = document.querySelector(`.nav-item[data-nav="${page}"]`);
+        if(nav) nav.classList.add('active');
+
+        // هدر
+        const back = document.getElementById('backBtn');
+        back.classList.add('hidden');
+
+        const titles = {home:'German App',scores:'امتیازات',online:'پروفایل',settings:'تنظیمات'};
+        document.getElementById('headerTitle').textContent = titles[page]||'German App';
+
+        state.page = page;
+        if(page==='scores') renderLeaderboard();
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const el = document.getElementById('page-'+pageId);
+        if(el) el.classList.add('active');
+    }
+
+    // ===== دکمه بازگشت اصلاح شده =====
+    function goBack() {
+        if(state.navStack.length > 0) {
+            const prev = state.navStack.pop();
+            if(prev.type === 'section') {
+                // بازگشت از محتوای بخش به صفحه جزئیات درس
+                openLessonDetail(prev.level, prev.lesson);
+            } else if(prev.type === 'detail') {
+                // بازگشت از جزئیات درس به لیست دروس
+                openLessons(prev.level);
+            } else if(prev.type === 'lessons') {
+                // بازگشت از لیست دروس به خانه
+                navTo('home');
+            }
+        } else {
+            navTo('home');
+        }
+    }
+
+    function showBackBtn() {
+        document.getElementById('backBtn').classList.remove('hidden');
+    }
+
+    // ============================================
+    // HOME - سطوح
+    // ============================================
+    function renderLevels() {
+        const grid = document.getElementById('levelGrid');
+        grid.innerHTML = '';
+        const cls = {'a1-1':'level-a11','a1-2':'level-a12','a2-1':'level-a21','a2-2':'level-a22',
+                     'b1-1':'level-b11','b1-2':'level-b12','b2-1':'level-b21','b2-2':'level-b22'};
+        Object.entries(DATA).forEach(([k,v]) => {
+            const prog = calcProg(k);
+            const card = document.createElement('div');
+            card.className = `level-card glass glass-interactive ${cls[k]||''}`;
+            card.onclick = () => openLessons(k);
+            card.innerHTML = `
+                <div class="level-icon">${v.icon}</div>
+                <div class="level-name">${v.name}</div>
+                <div class="level-desc">${v.desc}</div>
+                <div class="level-progress"><div class="level-progress-bar" style="width:${prog}%"></div></div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function calcProg(lk) {
+        const pr = state.progress[lk]||{};
+        const total = DATA[lk].lessons.length * 4;
+        let done = 0;
+        Object.values(pr).forEach(l => {
+            done += (l.exp?1:0)+(l.gram?1:0)+(l.voc?1:0)+(l.ex?1:0);
+        });
+        return total>0 ? Math.round(done/total*100) : 0;
+    }
+
+    // ============================================
+    // LESSONS LIST
+    // ============================================
+    function openLessons(lk) {
+        state.level = lk;
+        state.navStack.push({type:'lessons', level:lk});
+
+        const lv = DATA[lk];
+        showPage('lessons');
+        showBackBtn();
+        document.getElementById('headerTitle').textContent = lv.full;
+
+        const prog = calcProg(lk);
+        document.getElementById('lessonsTitle').innerHTML = `${lv.icon} ${lv.full}`;
+        document.getElementById('lessonsProg').style.width = prog+'%';
+        document.getElementById('lessonsProgText').textContent = `${prog}٪ تکمیل شده`;
+
+        const list = document.getElementById('lessonList');
+        list.innerHTML = '';
+        const colors = ['#30d158','#0a84ff','#bf5af2','#ff9f0a','#ff375f','#64d2ff',
+                        '#ff453a','#ffd60a','#5e5ce6','#30d158','#0a84ff','#bf5af2'];
+        lv.lessons.forEach((ls,i) => {
+            const lp = state.progress[lk]?.[ls.id]||{};
+            const d = (lp.exp?1:0)+(lp.gram?1:0)+(lp.voc?1:0)+(lp.ex?1:0);
+            const item = document.createElement('div');
+            item.className = 'lesson-item glass glass-interactive';
+            item.onclick = () => openLessonDetail(lk, ls.id);
+            item.innerHTML = `
+                <div class="lesson-num" style="background:${colors[i%12]}">${ls.id}</div>
+                <div class="lesson-info">
+                    <div class="lesson-title-text">${ls.title}</div>
+                    <div class="lesson-sub-text">${ls.sub} • ${d}/4</div>
+                </div>
+                <div class="lesson-status">${d===4?'✅':d>0?'🔄':'📘'}</div>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    // ============================================
+    // LESSON DETAIL
+    // ============================================
+    function openLessonDetail(lk, lid) {
+        state.level = lk;
+        state.lesson = lid;
+        // پاک کردن آخرین آیتم اگر section بوده
+        if(state.navStack.length && state.navStack[state.navStack.length-1].type==='section') {
+            state.navStack.pop();
+        }
+        if(!state.navStack.length || state.navStack[state.navStack.length-1].type!=='detail') {
+            state.navStack.push({type:'detail', level:lk, lesson:lid});
+        }
+
+        const lv = DATA[lk];
+        const ls = lv.lessons.find(l=>l.id===lid);
+        showPage('detail');
+        showBackBtn();
+        document.getElementById('headerTitle').textContent = `${lv.name} - درس ${lid}`;
+        document.getElementById('detailTitle').textContent = ls.title;
+        document.getElementById('detailSub').textContent = ls.sub;
+
+        const lp = state.progress[lk]?.[lid]||{};
+        const grid = document.getElementById('sectionGrid');
+        grid.innerHTML = [
+            {key:'exp',icon:'📖',name:'توضیح درس',sub:'مطالعه کنید'},
+            {key:'gram',icon:'📝',name:'گرامر',sub:'قواعد دستوری'},
+            {key:'voc',icon:'🗣️',name:'واژه‌ها',sub:'لغات جدید'},
+            {key:'ex',icon:'✏️',name:'تمرین',sub:'آزمون دانش'}
+        ].map(s => `
+            <div class="section-btn glass glass-interactive" onclick="openSection('${s.key}')">
+                <div class="s-icon">${s.icon}</div>
+                <div class="s-name">${s.name}</div>
+                <div class="s-sub">${s.sub}</div>
+                ${lp[s.key] ? '<div class="s-done">✅ مشاهده شده</div>' : ''}
+            </div>
+        `).join('');
+    }
+
+    // ============================================
+    // SECTION CONTENT
+    // ============================================
+    function openSection(sec) {
+        state.section = sec;
+        state.navStack.push({type:'section', level:state.level, lesson:state.lesson, section:sec});
+
+        showPage('section');
+        showBackBtn();
+
+        // تب‌ها
+        const tabs = document.getElementById('sectionTabs');
+        const allSecs = [{k:'exp',l:'📖 توضیح'},{k:'gram',l:'📝 گرامر'},{k:'voc',l:'🗣️ واژه‌ها'},{k:'ex',l:'✏️ تمرین'}];
+        tabs.innerHTML = allSecs.map(s =>
+            `<div class="tab-btn ${s.k===sec?'active':''}" onclick="switchTab('${s.k}')">${s.l}</div>`
+        ).join('');
+
+        renderSection(sec);
+        markDone(sec);
+    }
+
+    function switchTab(sec) {
+        state.section = sec;
+        document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        renderSection(sec);
+        markDone(sec);
+    }
+
+    function markDone(sec) {
+        if(!state.progress[state.level]) state.progress[state.level]={};
+        if(!state.progress[state.level][state.lesson]) state.progress[state.level][state.lesson]={};
+        state.progress[state.level][state.lesson][sec] = true;
+        save();
+        updateStats();
+    }
+
+    function renderSection(sec) {
+        const ls = DATA[state.level].lessons.find(l=>l.id===state.lesson);
+        const body = document.getElementById('sectionBody');
+        if(sec==='exp') body.innerHTML = buildExplanation(ls.explanation);
+        else if(sec==='gram') body.innerHTML = buildGrammar(ls.grammar);
+        else if(sec==='voc') body.innerHTML = buildVocab(ls.vocabulary);
+        else if(sec==='ex') body.innerHTML = buildExercises(ls.exercises);
+    }
+
+    // ===== ساخت محتوای توضیح =====
+    function buildExplanation(d) {
+        return `<h2 class="sec-title">📖 ${d.title}</h2>` +
+            d.blocks.map(b => {
+                let h = `<div class="exp-block glass"><h3>${b.heading}</h3>`;
+                if(b.text) h += `<p>${b.text}</p>`;
+                if(b.dialog) {
+                    h += `<div class="dialog-box">${
+                        b.dialog.map(l => `<div class="dialog-line"><span class="d-speaker">${l.speaker}:</span><span>${l.text}</span></div>`).join('')
+                    }</div>`;
+                }
+                return h + `</div>`;
+            }).join('');
+    }
+
+    // ===== ساخت محتوای گرامر =====
+    function buildGrammar(d) {
+        return `<h2 class="sec-title">📝 ${d.title}</h2>` +
+            d.blocks.map(b => {
+                let h = `<div class="g-block glass"><h3>${b.heading}</h3>`;
+                if(b.text) h += `<p>${b.text}</p>`;
+                if(b.table) {
+                    h += `<table class="g-table"><thead><tr>${b.table.headers.map(x=>`<th>${x}</th>`).join('')}</tr></thead>
+                    <tbody>${b.table.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+                }
+                if(b.examples) {
+                    b.examples.forEach(e => {
+                        h += `<div class="g-example"><div class="g-de">${e.de}</div><div class="g-fa">${e.fa}</div></div>`;
+                    });
+                }
+                return h + `</div>`;
+            }).join('');
+    }
+
+    // ===== ساخت واژه‌ها با صدا =====
+    function buildVocab(words) {
+        state.words = Math.max(state.words, words.length);
+        save();
+        return `<h2 class="sec-title">🗣️ واژه‌ها (${words.length} کلمه)</h2>
+        <div class="vocab-list">${words.map((w,i) => `
+            <div class="v-card glass">
+                <div class="v-top">
+                    <div class="v-word-group">
+                        ${w.article ? `<span class="v-article">${w.article}</span>` : ''}
+                        <span class="v-word">${w.word}</span>
+                        ${w.plural ? `<span class="v-plural">| ${w.plural}</span>` : ''}
+                    </div>
+                    <button class="v-speak" onclick="speak('${(w.article?w.article+' ':'') + w.word}', this)" title="تلفظ آلمانی">🔊</button>
+                </div>
+                <div class="v-trans">${w.trans}</div>
+                <div class="v-example">
+                    <div class="ex-de">${w.ex}</div>
+                    <div class="ex-fa">${w.exFa}</div>
+                </div>
+            </div>
+        `).join('')}</div>`;
+    }
+
+    // ===== ساخت تمرین‌ها =====
+    function buildExercises(exs) {
+        return `<h2 class="sec-title">✏️ تمرین‌ها (${exs.length} سؤال)</h2>
+        <div class="ex-container">${exs.map((e,i) => {
+            if(e.type==='mc') {
+                const letters = ['الف','ب','ج','د'];
+                return `<div class="ex-card glass" id="ex${i}">
+                    <div class="ex-type">چند گزینه‌ای</div>
+                    <div class="ex-question">${i+1}. ${e.q}</div>
+                    <div class="ex-options">${e.opts.map((o,j) =>
+                        `<div class="ex-opt" onclick="checkMC(${i},${j},${e.ans})" id="opt${i}_${j}">
+                            <span class="opt-letter">${letters[j]}</span><span>${o}</span>
+                        </div>`
+                    ).join('')}</div>
+                    <div class="feedback" id="fb${i}"></div>
+                </div>`;
+            } else {
+                return `<div class="ex-card glass" id="ex${i}">
+                    <div class="ex-type">جای خالی</div>
+                    <div class="ex-question">${i+1}. ${e.q}</div>
+                    <input class="fill-input" id="fi${i}" placeholder="پاسخ..." dir="ltr" autocomplete="off">
+                    <button class="check-answer-btn" onclick="checkFill(${i},'${e.a}')">بررسی پاسخ ✓</button>
+                    <div class="feedback" id="fb${i}"></div>
+                </div>`;
+            }
+        }).join('')}</div>`;
+    }
+
+    function checkMC(ei, sel, ans) {
+        const opts = document.querySelectorAll(`#ex${ei} .ex-opt`);
+        const fb = document.getElementById(`fb${ei}`);
+        opts.forEach((o,j) => { o.classList.add('disabled'); o.classList.remove('correct','wrong'); });
+        if(sel===ans) {
+            opts[sel].classList.add('correct');
+            fb.className='feedback ok'; fb.textContent='✅ آفرین! پاسخ درست است.';
+            state.xp+=10; state.correct++;
+        } else {
+            opts[sel].classList.add('wrong');
+            opts[ans].classList.add('correct');
+            fb.className='feedback no'; fb.textContent=`❌ نادرست. پاسخ صحیح: ${opts[ans].querySelector('span:last-child').textContent}`;
+        }
+        save(); updateStats();
+    }
+
+    function checkFill(ei, ans) {
+        const inp = document.getElementById(`fi${ei}`);
+        const fb = document.getElementById(`fb${ei}`);
+        const val = inp.value.trim().toLowerCase();
+        if(val===ans.toLowerCase()) {
+            fb.className='feedback ok'; fb.textContent='✅ آفرین! پاسخ درست است.';
+            inp.style.borderColor='var(--accent-green)';
+            state.xp+=15; state.correct++;
+        } else {
+            fb.className='feedback no'; fb.textContent=`❌ نادرست. پاسخ صحیح: ${ans}`;
+            inp.style.borderColor='var(--accent-red)';
+        }
+        save(); updateStats();
+    }
+
+    // ============================================
+    // TEXT TO SPEECH - اصلاح شده
+    // ============================================
+    let voices = [];
+
+    function loadVoices() {
+        voices = speechSynthesis.getVoices();
+    }
+
+    if('speechSynthesis' in window) {
+        speechSynthesis.onvoiceschanged = loadVoices;
+        loadVoices();
+    }
+
+    function speak(text, btn) {
+        if(!state.settings.sound) {
+            toast('🔇 صدا غیرفعال است. از تنظیمات فعال کنید.');
+            return;
+        }
+
+        if(!('speechSynthesis' in window)) {
+            toast('⚠️ مرورگر شما قابلیت تلفظ صوتی ندارد. لطفاً از Chrome استفاده کنید.');
+            return;
+        }
+
+        // لغو صداهای قبلی
+        speechSynthesis.cancel();
+
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'de-DE';
+        utter.rate = state.settings.rate;
+        utter.pitch = 1;
+        utter.volume = 1;
+
+        // پیدا کردن صدای آلمانی
+        if(voices.length === 0) voices = speechSynthesis.getVoices();
+
+        const deVoice = voices.find(v => v.lang === 'de-DE') ||
+                        voices.find(v => v.lang.startsWith('de')) ||
+                        voices.find(v => v.name.toLowerCase().includes('german'));
+
+        if(deVoice) {
+            utter.voice = deVoice;
+        }
+
+        if(btn) {
+            btn.classList.add('playing');
+            utter.onend = () => btn.classList.remove('playing');
+            utter.onerror = (e) => {
+                btn.classList.remove('playing');
+                console.warn('خطای تلفظ:', e);
+            };
+        }
+
+        // کمی تأخیر برای اطمینان
+        setTimeout(() => {
+            speechSynthesis.speak(utter);
+        }, 50);
+    }
+
+    // ============================================
+    // STATS UPDATE
+    // ============================================
+    function updateStats() {
+        let done = 0;
+        Object.values(state.progress).forEach(lv => {
+            Object.values(lv).forEach(ls => {
+                if(ls.exp && ls.gram && ls.voc && ls.ex) done++;
+            });
+        });
+
+        document.getElementById('statStreak').textContent = state.streak;
+        document.getElementById('statXP').textContent = state.xp;
+        document.getElementById('statDone').textContent = done;
+        document.getElementById('scXP').textContent = state.xp;
+        document.getElementById('scCorrect').textContent = state.correct;
+        document.getElementById('scWords').textContent = state.words;
+
+        // پروفایل
+        if(state.user) {
+            document.getElementById('profXP').textContent = state.xp;
+            document.getElementById('profLessons').textContent = done;
+            document.getElementById('profWords').textContent = state.words;
+            document.getElementById('profCorrect').textContent = state.correct;
+            document.getElementById('profStreak').textContent = state.streak;
+
+            const totalProg = Object.keys(DATA).reduce((s,k) => s + calcProg(k), 0) / Object.keys(DATA).length;
+            document.getElementById('profProgress').textContent = Math.round(totalProg) + '%';
+        }
+    }
+
+    // ============================================
+    // LEADERBOARD
+    // ============================================
+    function renderLeaderboard() {
+        const leaders = [
+            {name: state.user?.displayName || 'شما', avatar: state.user?.photoURL || null, emoji:'👤', level:'A1.1', score:state.xp, isMe:true},
+            {name:'Sara M.',avatar:null,emoji:'👩',level:'B1.2',score:4520},
+            {name:'Ali R.',avatar:null,emoji:'👨',level:'A2.2',score:3280},
+            {name:'Mina K.',avatar:null,emoji:'👩‍🦱',level:'B2.1',score:2940},
+            {name:'Reza T.',avatar:null,emoji:'🧑',level:'A1.2',score:1850},
+            {name:'Negar P.',avatar:null,emoji:'👩‍🔬',level:'A2.1',score:1420}
+        ].sort((a,b) => b.score - a.score);
+
+        const myRank = leaders.findIndex(l=>l.isMe) + 1;
+        document.getElementById('scRank').textContent = '#' + myRank;
+
+        document.getElementById('leaderboard').innerHTML = leaders.map((l,i) => {
+            const rc = i<3 ? `r${i+1}` : '';
+            const avatarHTML = l.avatar
+                ? `<img src="${l.avatar}" alt="">`
+                : l.emoji;
+            return `<div class="lb-item glass ${l.isMe?'':''}">
+                <div class="lb-rank ${rc}">${i+1}</div>
+                <div class="lb-avatar">${avatarHTML}</div>
+                <div class="lb-info">
+                    <div class="lb-name">${l.name} ${l.isMe?'(شما)':''}</div>
+                    <div class="lb-level">${l.level}</div>
+                </div>
+                <div class="lb-score">${l.score} XP</div>
+            </div>`;
+        }).join('');
+    }
+
+    // ============================================
+    // GOOGLE AUTH - واقعی با Firebase
+    // ============================================
+    function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
+    function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
+
+    async function googleSignIn() {
+        if(!firebaseReady) {
+            toast('⚠️ فایربیس هنوز راه‌اندازی نشده. لطفاً تنظیمات Firebase را وارد کنید.');
+            return;
+        }
+
+        showLoading();
+
+        try {
+            const result = await auth.signInWithPopup(googleProvider);
+            const user = result.user;
+
+            state.user = {
+                uid: user.uid,
+                displayName: user.displayName,
+                email: user.email,
+                photoURL: user.photoURL
+            };
+
+            // بارگذاری پیشرفت از فایربیس
+            try {
+                const doc = await db.collection('users').doc(user.uid).get();
+                if(doc.exists) {
+                    const d = doc.data();
+                    if(d.progress) state.progress = d.progress;
+                    if(d.xp) state.xp = d.xp;
+                    if(d.streak) state.streak = d.streak;
+                    if(d.correct) state.correct = d.correct;
+                    if(d.words) state.words = d.words;
+                }
+            } catch(e) { console.warn('خطا در بارگذاری داده:', e); }
+
+            save();
+            updateProfileUI();
+            updateStats();
+            renderLevels();
+            toast('✅ ورود موفقیت‌آمیز! خوش آمدید ' + user.displayName);
+        } catch(error) {
+            console.error('خطای ورود:', error);
+            if(error.code === 'auth/popup-closed-by-user') {
+                toast('ورود لغو شد');
+            } else if(error.code === 'auth/unauthorized-domain') {
+                toast('⚠️ این دامنه در Firebase مجاز نیست. دامنه را در Firebase Console اضافه کنید.');
+            } else {
+                toast('❌ خطا در ورود: ' + error.message);
+            }
+        }
+
+        hideLoading();
+    }
+
+    async function googleSignOut() {
+        if(firebaseReady) {
+            try { await auth.signOut(); } catch(e){}
+        }
+        state.user = null;
+        save();
+        updateProfileUI();
+        toast('از حساب خارج شدید');
+    }
+
+    function updateProfileUI() {
+        const loggedOut = document.getElementById('viewLoggedOut');
+        const loggedIn = document.getElementById('viewLoggedIn');
+        const welcomeUser = document.getElementById('welcomeUser');
+
+        if(state.user) {
+            loggedOut.style.display = 'none';
+            loggedIn.style.display = 'block';
+            welcomeUser.style.display = 'flex';
+
+            document.getElementById('profName').textContent = state.user.displayName || 'کاربر';
+            document.getElementById('profEmail').textContent = state.user.email || '';
+            document.getElementById('welcomeName').textContent = state.user.displayName || 'کاربر';
+
+            // آواتار
+            const profAv = document.getElementById('profAvatarContent');
+            const welcomeAv = document.getElementById('welcomeAvatar');
+
+            if(state.user.photoURL) {
+                profAv.innerHTML = `<img src="${state.user.photoURL}" alt="">`;
+                welcomeAv.innerHTML = `<img src="${state.user.photoURL}" alt="">`;
+            } else {
+                profAv.textContent = '👤';
+                welcomeAv.textContent = '👤';
+            }
+        } else {
+            loggedOut.style.display = 'block';
+            loggedIn.style.display = 'none';
+            welcomeUser.style.display = 'none';
+        }
+    }
+
+    // بررسی وضعیت ورود هنگام بارگذاری
+    if(firebaseReady) {
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                state.user = {
+                    uid: user.uid,
+                    displayName: user.displayName,
+                    email: user.email,
+                    photoURL: user.photoURL
+                };
+                updateProfileUI();
+                updateStats();
+                // بارگذاری داده از فایربیس
+                db.collection('users').doc(user.uid).get().then(doc => {
+                    if(doc.exists) {
+                        const d = doc.data();
+                        if(d.progress) state.progress = d.progress;
+                        if(d.xp) state.xp = d.xp;
+                        if(d.streak) state.streak = d.streak;
+                        if(d.correct) state.correct = d.correct;
+                        if(d.words) state.words = d.words;
+                        save(); updateStats(); renderLevels();
+                    }
+                }).catch(e => console.warn(e));
+            }
+        });
+    }
+
+    // ============================================
+    // SETTINGS
+    // ============================================
+    function toggleDarkMode() {
+        state.settings.dark = !state.settings.dark;
+        applyTheme();
+        save();
+        toast(state.settings.dark ? '🌙 حالت تاریک فعال شد' : '☀️ حالت روشن فعال شد');
+    }
+
+    function toggleSnd() {
+        state.settings.sound = !state.settings.sound;
+        document.getElementById('togSound').classList.toggle('on', state.settings.sound);
+        save();
+        toast(state.settings.sound ? '🔊 صدا فعال شد' : '🔇 صدا غیرفعال شد');
+    }
+
+    function toggleAuto() {
+        state.settings.auto = !state.settings.auto;
+        document.getElementById('togAuto').classList.toggle('on', state.settings.auto);
+        save();
+    }
+
+    function toggleNotif() {
+        state.settings.notif = !state.settings.notif;
+        document.getElementById('togNotif').classList.toggle('on', state.settings.notif);
+        save();
+    }
+
+    function cycleFont() {
+        const fs = ['small','medium','large'];
+        const labels = ['کوچک','متوسط','بزرگ'];
+        const i = (fs.indexOf(state.settings.font)+1)%3;
+        state.settings.font = fs[i];
+        document.getElementById('valFont').textContent = labels[i]+' ←';
+        applyTheme();
+        save();
+    }
+
+    function cycleRate() {
+        const rs = [0.7, 1, 1.3];
+        const labels = ['آهسته','عادی','سریع'];
+        const i = (rs.indexOf(state.settings.rate)+1)%3;
+        state.settings.rate = rs[i];
+        document.getElementById('valRate').textContent = labels[i]+' ←';
+        save();
+    }
+
+    function resetAll() {
+        if(confirm('آیا مطمئنید؟ تمام پیشرفت شما پاک خواهد شد.')) {
+            state.progress={}; state.xp=0; state.streak=0; state.correct=0; state.words=0;
+            save(); updateStats(); renderLevels();
+            toast('🗑️ همه پیشرفت پاک شد');
+        }
+    }
+
+    // ============================================
+    // TOAST
+    // ============================================
+    function toast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    // ============================================
+    // STREAK
+    // ============================================
+    function checkStreak() {
+        const today = new Date().toDateString();
+        const last = localStorage.getItem('ga_last_visit');
+        if(last !== today) {
+            const yesterday = new Date(Date.now()-86400000).toDateString();
+            if(last === yesterday) state.streak++;
+            else if(!last) state.streak = 1;
+            else state.streak = 1;
+            localStorage.setItem('ga_last_visit', today);
+            save();
+        }
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+    function init() {
+        load();
+        applyTheme();
+        renderLevels();
+        updateStats();
+        updateProfileUI();
+        checkStreak();
+        renderLeaderboard();
+
+        // تنظیمات UI
+        document.getElementById('togDark').classList.toggle('on', state.settings.dark);
+        document.getElementById('togSound').classList.toggle('on', state.settings.sound);
+        document.getElementById('togAuto').classList.toggle('on', state.settings.auto);
+        document.getElementById('togNotif').classList.toggle('on', state.settings.notif);
+
+        const fontLabels = {small:'کوچک',medium:'متوسط',large:'بزرگ'};
+        document.getElementById('valFont').textContent = (fontLabels[state.settings.font]||'متوسط') + ' ←';
+
+        const rateLabels = {0.7:'آهسته',1:'عادی',1.3:'سریع'};
+        document.getElementById('valRate').textContent = (rateLabels[state.settings.rate]||'عادی') + ' ←';
+    }
+
+    init();
+</script>
+</body>
+</html>
