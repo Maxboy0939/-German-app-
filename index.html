@@ -1,0 +1,3090 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>German App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           CSS VARIABLES & THEME SYSTEM
+           ============================================ */
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #1c1c1e;
+            --bg-tertiary: #2c2c2e;
+            --bg-glass: rgba(255, 255, 255, 0.06);
+            --bg-glass-hover: rgba(255, 255, 255, 0.1);
+            --bg-glass-active: rgba(255, 255, 255, 0.15);
+            --bg-glass-border: rgba(255, 255, 255, 0.08);
+            --bg-glass-highlight: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-tertiary: rgba(255, 255, 255, 0.4);
+            --accent-blue: #0a84ff;
+            --accent-green: #30d158;
+            --accent-orange: #ff9f0a;
+            --accent-red: #ff453a;
+            --accent-purple: #bf5af2;
+            --accent-teal: #64d2ff;
+            --accent-pink: #ff375f;
+            --accent-yellow: #ffd60a;
+            --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-glass-lg: 0 16px 48px rgba(0, 0, 0, 0.4);
+            --border-radius-sm: 12px;
+            --border-radius-md: 16px;
+            --border-radius-lg: 22px;
+            --border-radius-xl: 28px;
+            --blur-amount: 40px;
+            --blur-heavy: 80px;
+            --transition-fast: 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-smooth: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --transition-spring: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --font-fa: 'Vazirmatn', sans-serif;
+            --font-en: 'Inter', sans-serif;
+            --nav-height: 88px;
+            --status-bar-height: env(safe-area-inset-top, 20px);
+            --bottom-safe: env(safe-area-inset-bottom, 0px);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f2f2f7;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e5e5ea;
+            --bg-glass: rgba(255, 255, 255, 0.7);
+            --bg-glass-hover: rgba(255, 255, 255, 0.85);
+            --bg-glass-active: rgba(255, 255, 255, 0.95);
+            --bg-glass-border: rgba(0, 0, 0, 0.06);
+            --bg-glass-highlight: rgba(255, 255, 255, 0.9);
+            --text-primary: #1c1c1e;
+            --text-secondary: rgba(0, 0, 0, 0.55);
+            --text-tertiary: rgba(0, 0, 0, 0.3);
+            --accent-blue: #007aff;
+            --accent-green: #28cd41;
+            --accent-orange: #ff9500;
+            --accent-red: #ff3b30;
+            --accent-purple: #af52de;
+            --accent-teal: #5ac8fa;
+            --accent-pink: #ff2d55;
+            --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --shadow-glass-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+        }
+
+        /* ============================================
+           RESET & BASE STYLES
+           ============================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-fa);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background var(--transition-smooth), color var(--transition-smooth);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================
+           LIQUID GLASS COMPONENTS
+           ============================================ */
+        .glass-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid var(--bg-glass-border);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-glass);
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--bg-glass-highlight), transparent);
+            opacity: 0.6;
+        }
+
+        .glass-card:hover {
+            background: var(--bg-glass-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glass-lg);
+        }
+
+        .glass-card:active {
+            transform: translateY(0);
+            background: var(--bg-glass-active);
+        }
+
+        .glass-button {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--bg-glass-border);
+            border-radius: var(--border-radius-md);
+            color: var(--text-primary);
+            padding: 14px 24px;
+            font-family: var(--font-fa);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent);
+            border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+        }
+
+        .glass-button:hover {
+            background: var(--bg-glass-hover);
+            transform: scale(1.02);
+        }
+
+        .glass-button:active {
+            transform: scale(0.98);
+        }
+
+        .glass-button.primary {
+            background: var(--accent-blue);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .glass-button.success {
+            background: var(--accent-green);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .glass-input {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--bg-glass-border);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            padding: 14px 18px;
+            font-family: var(--font-fa);
+            font-size: 1rem;
+            width: 100%;
+            outline: none;
+            transition: all var(--transition-fast);
+        }
+
+        .glass-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2);
+        }
+
+        /* ============================================
+           APP CONTAINER
+           ============================================ */
+        #app {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: calc(var(--nav-height) + var(--bottom-safe) + 10px);
+        }
+
+        /* ============================================
+           HEADER / STATUS BAR
+           ============================================ */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-heavy));
+            -webkit-backdrop-filter: blur(var(--blur-heavy));
+            border-bottom: 1px solid var(--bg-glass-border);
+            padding: 16px 20px;
+            padding-top: calc(var(--status-bar-height) + 12px);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-back {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-family: var(--font-fa);
+            padding: 8px;
+        }
+
+        .header-action {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all var(--transition-fast);
+        }
+
+        .header-action:hover {
+            background: var(--bg-glass);
+        }
+
+        /* ============================================
+           BOTTOM NAVIGATION
+           ============================================ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            height: var(--nav-height);
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--blur-heavy));
+            -webkit-backdrop-filter: blur(var(--blur-heavy));
+            border-top: 1px solid var(--bg-glass-border);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-around;
+            padding: 10px 8px;
+            padding-bottom: calc(var(--bottom-safe) + 10px);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            transition: all var(--transition-fast);
+            font-family: var(--font-fa);
+            min-width: 64px;
+        }
+
+        .nav-item.active {
+            color: var(--accent-blue);
+        }
+
+        .nav-item .nav-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .nav-item .nav-label {
+            font-size: 0.65rem;
+            font-weight: 500;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
+        }
+
+        /* ============================================
+           PAGE CONTENT
+           ============================================ */
+        .page {
+            display: none;
+            padding: 20px;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* ============================================
+           HOME PAGE
+           ============================================ */
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-radius: var(--border-radius-xl);
+            padding: 28px 24px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::after {
+            content: '🇩🇪';
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            font-size: 120px;
+            opacity: 0.1;
+        }
+
+        .welcome-banner h1 {
+            font-size: 1.6rem;
+            color: #fff;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-banner p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 18px 12px;
+        }
+
+        .stat-card .stat-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: var(--font-en);
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .section-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .level-card {
+            padding: 20px 16px;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+        }
+
+        .level-card .level-badge {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .level-card .level-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: var(--font-en);
+            margin-bottom: 4px;
+        }
+
+        .level-card .level-desc {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .level-card .level-progress {
+            margin-top: 12px;
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .level-card .level-progress-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.6s ease;
+        }
+
+        .level-card[data-level="a1-1"] .level-progress-fill { background: var(--accent-green); }
+        .level-card[data-level="a1-2"] .level-progress-fill { background: var(--accent-teal); }
+        .level-card[data-level="a2-1"] .level-progress-fill { background: var(--accent-blue); }
+        .level-card[data-level="a2-2"] .level-progress-fill { background: var(--accent-purple); }
+        .level-card[data-level="b1-1"] .level-progress-fill { background: var(--accent-orange); }
+        .level-card[data-level="b1-2"] .level-progress-fill { background: var(--accent-pink); }
+        .level-card[data-level="b2-1"] .level-progress-fill { background: var(--accent-red); }
+        .level-card[data-level="b2-2"] .level-progress-fill { background: var(--accent-yellow); }
+
+        /* ============================================
+           LESSONS LIST
+           ============================================ */
+        .lessons-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .lesson-item {
+            padding: 18px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .lesson-number {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            font-family: var(--font-en);
+            flex-shrink: 0;
+        }
+
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .lesson-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .lesson-status {
+            font-size: 1.2rem;
+        }
+
+        /* ============================================
+           LESSON DETAIL (4 SECTIONS)
+           ============================================ */
+        .lesson-sections {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .section-card {
+            padding: 24px 16px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .section-card .section-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .section-card .section-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .section-card .section-count {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================
+           VOCABULARY SECTION
+           ============================================ */
+        .vocab-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .vocab-card {
+            padding: 18px 20px;
+        }
+
+        .vocab-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .vocab-word {
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: var(--font-en);
+            color: var(--accent-blue);
+        }
+
+        .vocab-article {
+            font-size: 0.8rem;
+            color: var(--accent-orange);
+            font-weight: 600;
+            font-family: var(--font-en);
+        }
+
+        .vocab-speak-btn {
+            background: var(--accent-blue);
+            border: none;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+
+        .vocab-speak-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .vocab-speak-btn:active {
+            transform: scale(0.95);
+        }
+
+        .vocab-speak-btn.playing {
+            animation: pulse 0.6s infinite;
+            background: var(--accent-green);
+        }
+
+        .vocab-translation {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .vocab-example {
+            background: var(--bg-glass);
+            border-radius: var(--border-radius-sm);
+            padding: 12px 14px;
+            margin-top: 8px;
+            border-right: 3px solid var(--accent-blue);
+        }
+
+        .vocab-example .example-de {
+            font-size: 0.88rem;
+            font-family: var(--font-en);
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            font-style: italic;
+        }
+
+        .vocab-example .example-fa {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .vocab-plural {
+            font-size: 0.78rem;
+            color: var(--accent-purple);
+            font-family: var(--font-en);
+        }
+
+        /* ============================================
+           GRAMMAR SECTION
+           ============================================ */
+        .grammar-content {
+            line-height: 1.9;
+        }
+
+        .grammar-block {
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .grammar-block h3 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: var(--accent-purple);
+        }
+
+        .grammar-block p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .grammar-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.85rem;
+        }
+
+        .grammar-table th {
+            background: var(--bg-glass);
+            padding: 10px 12px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--accent-blue);
+            font-family: var(--font-en);
+        }
+
+        .grammar-table td {
+            padding: 10px 12px;
+            text-align: center;
+            border-bottom: 1px solid var(--bg-glass-border);
+            font-family: var(--font-en);
+        }
+
+        .grammar-example {
+            background: var(--bg-glass);
+            border-radius: var(--border-radius-sm);
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-right: 3px solid var(--accent-purple);
+        }
+
+        .grammar-example .de {
+            font-family: var(--font-en);
+            font-style: italic;
+            margin-bottom: 4px;
+        }
+
+        .grammar-example .fa {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .grammar-note {
+            background: rgba(255, 159, 10, 0.1);
+            border: 1px solid rgba(255, 159, 10, 0.2);
+            border-radius: var(--border-radius-sm);
+            padding: 14px 16px;
+            margin: 12px 0;
+            font-size: 0.88rem;
+        }
+
+        .grammar-note::before {
+            content: '💡 ';
+        }
+
+        /* ============================================
+           EXPLANATION SECTION
+           ============================================ */
+        .explanation-content {
+            line-height: 2;
+        }
+
+        .explanation-block {
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .explanation-block h3 {
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            color: var(--accent-teal);
+        }
+
+        .explanation-block p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .dialog-box {
+            background: var(--bg-glass);
+            border-radius: var(--border-radius-md);
+            padding: 16px;
+            margin: 12px 0;
+        }
+
+        .dialog-line {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .dialog-speaker {
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-family: var(--font-en);
+            min-width: 60px;
+        }
+
+        /* ============================================
+           EXERCISES SECTION
+           ============================================ */
+        .exercise-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .exercise-card {
+            padding: 20px;
+        }
+
+        .exercise-type {
+            font-size: 0.75rem;
+            color: var(--accent-orange);
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .exercise-question {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .exercise-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .exercise-option {
+            padding: 14px 18px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .exercise-option:hover {
+            background: var(--bg-glass-hover);
+        }
+
+        .exercise-option .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+            font-family: var(--font-en);
+            flex-shrink: 0;
+        }
+
+        .exercise-option.correct {
+            background: rgba(48, 209, 88, 0.15);
+            border-color: var(--accent-green);
+        }
+
+        .exercise-option.correct .option-letter {
+            background: var(--accent-green);
+            color: #fff;
+        }
+
+        .exercise-option.incorrect {
+            background: rgba(255, 69, 58, 0.15);
+            border-color: var(--accent-red);
+        }
+
+        .exercise-option.incorrect .option-letter {
+            background: var(--accent-red);
+            color: #fff;
+        }
+
+        .exercise-option.selected {
+            border-color: var(--accent-blue);
+            background: rgba(10, 132, 255, 0.1);
+        }
+
+        .fill-blank-input {
+            display: inline-block;
+            min-width: 120px;
+            border-bottom: 2px solid var(--accent-blue);
+            padding: 4px 8px;
+            font-family: var(--font-en);
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        .exercise-feedback {
+            padding: 12px 16px;
+            border-radius: var(--border-radius-sm);
+            margin-top: 12px;
+            font-size: 0.88rem;
+            display: none;
+        }
+
+        .exercise-feedback.correct {
+            display: block;
+            background: rgba(48, 209, 88, 0.12);
+            color: var(--accent-green);
+            border: 1px solid rgba(48, 209, 88, 0.2);
+        }
+
+        .exercise-feedback.incorrect {
+            display: block;
+            background: rgba(255, 69, 58, 0.12);
+            color: var(--accent-red);
+            border: 1px solid rgba(255, 69, 58, 0.2);
+        }
+
+        .check-btn {
+            margin-top: 12px;
+            width: 100%;
+        }
+
+        .exercise-score {
+            text-align: center;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .exercise-score .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 6px solid var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: var(--font-en);
+        }
+
+        /* ============================================
+           SCORES PAGE
+           ============================================ */
+        .scores-page .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            margin-bottom: 8px;
+        }
+
+        .leaderboard-rank {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-family: var(--font-en);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .rank-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #fff; }
+        .rank-2 { background: linear-gradient(135deg, #C0C0C0, #A8A8A8); color: #fff; }
+        .rank-3 { background: linear-gradient(135deg, #CD7F32, #B8860B); color: #fff; }
+
+        .leaderboard-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg-glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .leaderboard-info {
+            flex: 1;
+        }
+
+        .leaderboard-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .leaderboard-level {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .leaderboard-score {
+            font-weight: 700;
+            font-family: var(--font-en);
+            color: var(--accent-orange);
+        }
+
+        .my-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .my-stat-card {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .my-stat-card .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            font-family: var(--font-en);
+        }
+
+        .my-stat-card .stat-text {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* ============================================
+           ONLINE / ACCOUNT PAGE
+           ============================================ */
+        .profile-card {
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 16px;
+        }
+
+        .profile-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-email {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--border-radius-md);
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--bg-glass-border);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: var(--font-fa);
+        }
+
+        .google-btn:hover {
+            background: var(--bg-glass-hover);
+            transform: translateY(-2px);
+        }
+
+        .google-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* ============================================
+           SETTINGS PAGE
+           ============================================ */
+        .settings-group {
+            margin-bottom: 24px;
+        }
+
+        .settings-group-title {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            padding: 0 4px;
+        }
+
+        .settings-list {
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+        }
+
+        .settings-list .glass-card {
+            border-radius: 0;
+            margin: 0;
+        }
+
+        .settings-list .glass-card:first-child {
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        }
+
+        .settings-list .glass-card:last-child {
+            border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+        }
+
+        .settings-list .glass-card:only-child {
+            border-radius: var(--border-radius-lg);
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--bg-glass-border);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-item:hover {
+            background: var(--bg-glass-hover);
+        }
+
+        .setting-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .setting-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .setting-label {
+            font-size: 0.95rem;
+        }
+
+        .setting-value {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            width: 52px;
+            height: 32px;
+            border-radius: 16px;
+            background: var(--bg-tertiary);
+            position: relative;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .toggle-switch.active {
+            background: var(--accent-green);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #fff;
+            top: 3px;
+            left: 3px;
+            transition: all var(--transition-fast);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active::after {
+            left: 23px;
+        }
+
+        /* ============================================
+           MODAL
+           ============================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+            width: 100%;
+            max-width: 430px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 24px;
+            animation: slideUp 0.4s ease;
+        }
+
+        .modal-handle {
+            width: 36px;
+            height: 5px;
+            border-radius: 3px;
+            background: var(--bg-tertiary);
+            margin: 0 auto 20px;
+        }
+
+        /* ============================================
+           PROGRESS BAR
+           ============================================ */
+        .progress-bar {
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            transition: width 0.6s ease;
+        }
+
+        /* ============================================
+           BADGE / TAG
+           ============================================ */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .badge-green { background: rgba(48, 209, 88, 0.15); color: var(--accent-green); }
+        .badge-blue { background: rgba(10, 132, 255, 0.15); color: var(--accent-blue); }
+        .badge-orange { background: rgba(255, 159, 10, 0.15); color: var(--accent-orange); }
+        .badge-purple { background: rgba(191, 90, 242, 0.15); color: var(--accent-purple); }
+
+        /* ============================================
+           SCROLLBAR CUSTOM
+           ============================================ */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 380px) {
+            .level-grid { grid-template-columns: 1fr; }
+            .lesson-sections { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        }
+
+        /* Loading animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--bg-glass-border);
+            border-top-color: var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Notification toast */
+        .toast {
+            position: fixed;
+            top: calc(var(--status-bar-height) + 60px);
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--bg-glass);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--bg-glass-border);
+            border-radius: var(--border-radius-md);
+            padding: 14px 24px;
+            font-size: 0.9rem;
+            z-index: 3000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--shadow-glass-lg);
+            max-width: 350px;
+            text-align: center;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Chip/Tab for sections */
+        .section-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 0;
+            margin-bottom: 16px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .section-tabs::-webkit-scrollbar { display: none; }
+
+        .section-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            background: var(--bg-glass);
+            border: 1px solid var(--bg-glass-border);
+            color: var(--text-secondary);
+            font-family: var(--font-fa);
+        }
+
+        .section-tab.active {
+            background: var(--accent-blue);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .empty-state .empty-text {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <div id="app">
+        <!-- ============================================
+             HEADER
+             ============================================ -->
+        <header class="app-header" id="appHeader">
+            <div class="header-content">
+                <button class="header-back" id="headerBack" style="display:none" onclick="goBack()">
+                    → بازگشت
+                </button>
+                <h1 class="header-title" id="headerTitle">German App</h1>
+                <button class="header-action" id="headerAction" onclick="showNotifications()">🔔</button>
+            </div>
+        </header>
+
+        <!-- ============================================
+             HOME PAGE
+             ============================================ -->
+        <div class="page active" id="page-home">
+            <div class="welcome-banner">
+                <h1>!Willkommen</h1>
+                <p>به اپلیکیشن یادگیری زبان آلمانی خوش آمدید</p>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-card glass-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="streakCount">0</div>
+                    <div class="stat-label">روز متوالی</div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-value" id="totalXP">0</div>
+                    <div class="stat-label">امتیاز</div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-value" id="lessonsCompleted">0</div>
+                    <div class="stat-label">درس تمام شده</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">📖 سطوح کتاب Menschen</h2>
+
+            <div class="level-grid" id="levelGrid">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+
+        <!-- ============================================
+             LESSONS LIST PAGE
+             ============================================ -->
+        <div class="page" id="page-lessons">
+            <h2 class="section-title" id="lessonsPageTitle"></h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="levelProgressBar" style="width: 0%"></div>
+            </div>
+            <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:20px" id="levelProgressText"></p>
+            <div class="lessons-list" id="lessonsList">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+
+        <!-- ============================================
+             LESSON DETAIL PAGE (4 Sections)
+             ============================================ -->
+        <div class="page" id="page-lesson-detail">
+            <h2 class="section-title" id="lessonDetailTitle"></h2>
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:20px" id="lessonDetailDesc"></p>
+
+            <div class="lesson-sections" id="lessonSections">
+                <div class="section-card glass-card" onclick="showSection('explanation')">
+                    <div class="section-icon">📖</div>
+                    <div class="section-name">توضیح درس</div>
+                    <div class="section-count">مطالعه کنید</div>
+                </div>
+                <div class="section-card glass-card" onclick="showSection('grammar')">
+                    <div class="section-icon">📝</div>
+                    <div class="section-name">گرامر</div>
+                    <div class="section-count">قواعد دستوری</div>
+                </div>
+                <div class="section-card glass-card" onclick="showSection('vocabulary')">
+                    <div class="section-icon">🗣️</div>
+                    <div class="section-name">واژه‌ها</div>
+                    <div class="section-count">لغات جدید</div>
+                </div>
+                <div class="section-card glass-card" onclick="showSection('exercises')">
+                    <div class="section-icon">✏️</div>
+                    <div class="section-name">تمرین</div>
+                    <div class="section-count">آزمون دانش</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+             SECTION CONTENT PAGE
+             ============================================ -->
+        <div class="page" id="page-section">
+            <div class="section-tabs" id="sectionTabs">
+                <div class="section-tab active" onclick="switchSectionTab('explanation')">📖 توضیح درس</div>
+                <div class="section-tab" onclick="switchSectionTab('grammar')">📝 گرامر</div>
+                <div class="section-tab" onclick="switchSectionTab('vocabulary')">🗣️ واژه‌ها</div>
+                <div class="section-tab" onclick="switchSectionTab('exercises')">✏️ تمرین</div>
+            </div>
+            <div id="sectionContent">
+                <!-- Filled dynamically -->
+            </div>
+        </div>
+
+        <!-- ============================================
+             SCORES PAGE
+             ============================================ -->
+        <div class="page" id="page-scores">
+            <h2 class="section-title">🏆 جدول امتیازات</h2>
+
+            <div class="my-stats">
+                <div class="my-stat-card glass-card">
+                    <div class="stat-number" style="color:var(--accent-orange)" id="myTotalScore">0</div>
+                    <div class="stat-text">امتیاز کل</div>
+                </div>
+                <div class="my-stat-card glass-card">
+                    <div class="stat-number" style="color:var(--accent-green)" id="myRank">#1</div>
+                    <div class="stat-text">رتبه شما</div>
+                </div>
+                <div class="my-stat-card glass-card">
+                    <div class="stat-number" style="color:var(--accent-purple)" id="correctAnswers">0</div>
+                    <div class="stat-text">پاسخ صحیح</div>
+                </div>
+                <div class="my-stat-card glass-card">
+                    <div class="stat-number" style="color:var(--accent-blue)" id="wordsLearned">0</div>
+                    <div class="stat-text">لغت یاد گرفته</div>
+                </div>
+            </div>
+
+            <h3 class="section-title">👑 برترین‌ها</h3>
+            <div id="leaderboard">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+
+        <!-- ============================================
+             ONLINE / ACCOUNT PAGE
+             ============================================ -->
+        <div class="page" id="page-online">
+            <div id="loggedOutView">
+                <div class="profile-card glass-card">
+                    <div class="profile-avatar-large">👤</div>
+                    <h2 class="profile-name">ورود به حساب</h2>
+                    <p class="profile-email">برای ذخیره پیشرفت وارد شوید</p>
+                </div>
+
+                <button class="google-btn" onclick="signInWithGoogle()">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    ورود با حساب گوگل
+                </button>
+            </div>
+
+            <div id="loggedInView" style="display:none">
+                <div class="profile-card glass-card">
+                    <div class="profile-avatar-large" id="userAvatar">👤</div>
+                    <h2 class="profile-name" id="userName">کاربر</h2>
+                    <p class="profile-email" id="userEmail">email@gmail.com</p>
+                </div>
+
+                <div class="my-stats" style="margin-bottom:20px">
+                    <div class="my-stat-card glass-card">
+                        <div class="stat-number" style="color:var(--accent-blue)" id="onlineLevel">A1.1</div>
+                        <div class="stat-text">سطح فعلی</div>
+                    </div>
+                    <div class="my-stat-card glass-card">
+                        <div class="stat-number" style="color:var(--accent-green)" id="onlineProgress">0%</div>
+                        <div class="stat-text">پیشرفت</div>
+                    </div>
+                </div>
+
+                <button class="glass-button" style="width:100%;margin-top:12px;color:var(--accent-red)" onclick="signOut()">
+                    🚪 خروج از حساب
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================
+             SETTINGS PAGE
+             ============================================ -->
+        <div class="page" id="page-settings">
+            <h2 class="section-title">⚙️ تنظیمات</h2>
+
+            <div class="settings-group">
+                <div class="settings-group-title">ظاهر</div>
+                <div class="settings-list glass-card">
+                    <div class="setting-item" onclick="toggleTheme()">
+                        <div class="setting-left">
+                            <div class="setting-icon" style="background:var(--accent-blue)">🌙</div>
+                            <span class="setting-label">حالت تاریک</span>
+                        </div>
+                        <div class="toggle-switch active" id="darkModeToggle"></div>
+                    </div>
+                    <div class="setting-item" onclick="changeFontSize()">
+                        <div class="setting-left">
+                            <div class="setting-icon" style="background:var(--accent-purple)">🔤</div>
+                            <span class="setting-label">اندازه فونت</span>
+                        </div>
+                        <div class="setting-value" id="fontSizeValue">متوسط ←</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <div class="settings-group-title">صدا</div>
+                <div class="settings-list glass-card">
+                    <div class="setting-item" onclick="toggleSound()">
+                        <div class="setting-left">
+                            <div class="setting-icon" style="background:var(--accent-green)">🔊</div>
+                            <span class="setting-label">صدای تلفظ</span>
+                        </div>
+                        <div class="toggle-switch active" id="soundToggle"></div>
+                    </div>
+                    <div class="setting-item" onclick="toggleAutoPlay()">
+                        <div class="setting-left">
+                            <div class="setting-icon" style="background:var(--accent-orange)">▶️</div>
+                            <span class="setting-label">پخش خودکار صدا</span>
+                        </div>
+                        <div class="toggle-switch" id="autoPlayToggle"></div>
+                    </div>
+                    <div class="setting-item" onclick="changeSpeechRate()">
+                        <div class="setting-left">
+                            <div class="setting-icon" style="background:var(--accent-teal)">⏩</div>
+                            <span class="setting-label">سرعت تلفظ</span>
+                        </div>
+                        <div class="setting-value" id="speechRateValue">عادی ←</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <div class="settings-group-title">یادگیری</div>
+                <div class="settings-list glass-card">
+                    <div class="setting-item" onclick="toggleNotifications()">
+                        <div class="setting-left">
+                            <div class="setting-icon" style="background:var(--accent-pink)">🔔</div>
+                            <span class="setting-label">یادآوری روزانه</span>
+                        </div>
+                        <div class="toggle-switch active" id="notifToggle"></div>
+                    </div>
+                    <div class="setting-item" onclick="changeLanguage()">
+                        <div class="setting-left">
+                            <div class="setting-icon" style="background:var(--accent-yellow)">🌐</div>
+                            <span class="setting-label">زبان ترجمه</span>
+                        </div>
+                        <div class="setting-value" id="langValue">فارسی ←</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <div class="settings-group-title">داده‌ها</div>
+                <div class="settings-list glass-card">
+                    <div class="setting-item" onclick="resetProgress()">
+                        <div class="setting-left">
+                            <div class="setting-icon" style="background:var(--accent-red)">🗑️</div>
+                            <span class="setting-label" style="color:var(--accent-red)">پاک کردن پیشرفت</span>
+                        </div>
+                        <div class="setting-value">←</div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-left">
+                            <div class="setting-icon" style="background:var(--bg-tertiary)">ℹ️</div>
+                            <span class="setting-label">نسخه برنامه</span>
+                        </div>
+                        <div class="setting-value">1.0.0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+             BOTTOM NAVIGATION
+             ============================================ -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-page="home" onclick="navigateTo('home')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">خانه</span>
+            </button>
+            <button class="nav-item" data-page="scores" onclick="navigateTo('scores')">
+                <span class="nav-icon">🏆</span>
+                <span class="nav-label">امتیازات</span>
+            </button>
+            <button class="nav-item" data-page="online" onclick="navigateTo('online')">
+                <span class="nav-icon">🌐</span>
+                <span class="nav-label">آنلاین</span>
+            </button>
+            <button class="nav-item" data-page="settings" onclick="navigateTo('settings')">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label">تنظیمات</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+    // ============================================
+    // COMPLETE MENSCHEN BOOK DATA
+    // ============================================
+
+    const BOOK_DATA = {
+
+    // ============================
+    // A1.1 - 12 LESSONS COMPLETE
+    // ============================
+    "a1-1": {
+        name: "A1.1",
+        fullName: "Menschen A1.1",
+        color: "#30d158",
+        icon: "🌱",
+        description: "مبتدی - بخش اول",
+        lessons: [
+            // --- Lektion 1: Hallo! Ich bin Nicole ---
+            {
+                id: 1,
+                title: "Hallo! Ich bin Nicole",
+                subtitle: "سلام! من نیکول هستم",
+                explanation: {
+                    title: "معرفی خود و دیگران",
+                    blocks: [
+                        {
+                            heading: "موضوع درس",
+                            text: "در این درس یاد می‌گیرید چگونه خود را معرفی کنید، نام و کشورتان را بگویید، سلام و احوالپرسی کنید و زبانی که صحبت می‌کنید را بیان کنید."
+                        },
+                        {
+                            heading: "مکالمه نمونه",
+                            dialog: [
+                                { speaker: "Nicole", text: "Hallo! Ich bin Nicole. Und wie heißt du?" },
+                                { speaker: "Mehdi", text: "Hallo! Ich heiße Mehdi." },
+                                { speaker: "Nicole", text: "Woher kommst du, Mehdi?" },
+                                { speaker: "Mehdi", text: "Ich komme aus dem Iran. Und du?" },
+                                { speaker: "Nicole", text: "Ich komme aus Deutschland." },
+                                { speaker: "Mehdi", text: "Welche Sprachen sprichst du?" },
+                                { speaker: "Nicole", text: "Ich spreche Deutsch und Englisch." }
+                            ]
+                        },
+                        {
+                            heading: "نکات مهم",
+                            text: "در آلمانی دو حالت خطاب وجود دارد: du (تو - غیررسمی) و Sie (شما - رسمی). در موقعیت‌های دوستانه از du و در موقعیت‌های رسمی از Sie استفاده می‌شود."
+                        },
+                        {
+                            heading: "حالت رسمی",
+                            dialog: [
+                                { speaker: "Herr Müller", text: "Guten Tag! Ich bin Thomas Müller. Wie heißen Sie?" },
+                                { speaker: "Frau Schmidt", text: "Guten Tag! Ich heiße Anna Schmidt." },
+                                { speaker: "Herr Müller", text: "Woher kommen Sie?" },
+                                { speaker: "Frau Schmidt", text: "Ich komme aus Österreich." }
+                            ]
+                        }
+                    ]
+                },
+                grammar: {
+                    title: "فعل‌های sein و heißen - ضمایر شخصی",
+                    blocks: [
+                        {
+                            heading: "ضمایر شخصی (Personalpronomen)",
+                            text: "ضمایر شخصی در آلمانی عبارتند از:",
+                            table: {
+                                headers: ["آلمانی", "فارسی", "مثال"],
+                                rows: [
+                                    ["ich", "من", "Ich bin Mehdi."],
+                                    ["du", "تو", "Du bist nett."],
+                                    ["er", "او (مذکر)", "Er ist groß."],
+                                    ["sie", "او (مؤنث)", "Sie ist klein."],
+                                    ["es", "آن (خنثی)", "Es ist gut."],
+                                    ["wir", "ما", "Wir sind hier."],
+                                    ["ihr", "شما (جمع غیررسمی)", "Ihr seid nett."],
+                                    ["sie/Sie", "آنها / شما (رسمی)", "Sie sind freundlich."]
+                                ]
+                            }
+                        },
+                        {
+                            heading: "صرف فعل sein (بودن)",
+                            table: {
+                                headers: ["ضمیر", "sein", "مثال"],
+                                rows: [
+                                    ["ich", "bin", "Ich bin Student."],
+                                    ["du", "bist", "Du bist nett."],
+                                    ["er/sie/es", "ist", "Er ist Lehrer."],
+                                    ["wir", "sind", "Wir sind Freunde."],
+                                    ["ihr", "seid", "Ihr seid toll."],
+                                    ["sie/Sie", "sind", "Sie sind aus Wien."]
+                                ]
+                            }
+                        },
+                        {
+                            heading: "صرف فعل heißen (نامیده شدن)",
+                            table: {
+                                headers: ["ضمیر", "heißen", "مثال"],
+                                rows: [
+                                    ["ich", "heiße", "Ich heiße Mehdi."],
+                                    ["du", "heißt", "Wie heißt du?"],
+                                    ["er/sie/es", "heißt", "Sie heißt Anna."],
+                                    ["wir", "heißen", "Wir heißen Müller."],
+                                    ["ihr", "heißt", "Wie heißt ihr?"],
+                                    ["sie/Sie", "heißen", "Wie heißen Sie?"]
+                                ]
+                            }
+                        },
+                        {
+                            heading: "صرف فعل kommen (آمدن)",
+                            table: {
+                                headers: ["ضمیر", "kommen", "مثال"],
+                                rows: [
+                                    ["ich", "komme", "Ich komme aus dem Iran."],
+                                    ["du", "kommst", "Woher kommst du?"],
+                                    ["er/sie/es", "kommt", "Er kommt aus Berlin."],
+                                    ["wir", "kommen", "Wir kommen aus Wien."],
+                                    ["ihr", "kommt", "Woher kommt ihr?"],
+                                    ["sie/Sie", "kommen", "Woher kommen Sie?"]
+                                ]
+                            }
+                        },
+                        {
+                            heading: "ساختار جمله پرسشی با W-Frage",
+                            text: "در سؤالاتی که با کلمه پرسشی شروع می‌شوند، فعل در جایگاه دوم قرار می‌گیرد.",
+                            examples: [
+                                { de: "Wie heißt du?", fa: "اسمت چیه؟" },
+                                { de: "Woher kommst du?", fa: "از کجا میای؟" },
+                                { de: "Welche Sprachen sprichst du?", fa: "چه زبان‌هایی صحبت می‌کنی؟" }
+                            ]
+                        },
+                        {
+                            heading: "ساختار جمله پرسشی بله/خیر (Ja/Nein-Frage)",
+                            text: "در سؤالات بله/خیر، فعل در جایگاه اول قرار می‌گیرد.",
+                            examples: [
+                                { de: "Bist du Mehdi?", fa: "تو مهدی هستی؟" },
+                                { de: "Kommst du aus dem Iran?", fa: "از ایران میای؟" },
+                                { de: "Sprichst du Deutsch?", fa: "آلمانی صحبت می‌کنی؟" }
+                            ]
+                        }
+                    ]
+                },
+                vocabulary: [
+                    { word: "hallo", article: "", plural: "", translation: "سلام", example: "Hallo, wie geht's?", exampleTranslation: "سلام، حالت چطوره؟" },
+                    { word: "guten Tag", article: "", plural: "", translation: "روز بخیر", example: "Guten Tag, Herr Müller!", exampleTranslation: "روز بخیر، آقای مولر!" },
+                    { word: "guten Morgen", article: "", plural: "", translation: "صبح بخیر", example: "Guten Morgen! Wie geht es Ihnen?", exampleTranslation: "صبح بخیر! حالتان چطور است؟" },
+                    { word: "guten Abend", article: "", plural: "", translation: "عصر بخیر", example: "Guten Abend zusammen!", exampleTranslation: "عصر همگی بخیر!" },
+                    { word: "tschüs", article: "", plural: "", translation: "خداحافظ (غیررسمی)", example: "Tschüs, bis morgen!", exampleTranslation: "خداحافظ، تا فردا!" },
+                    { word: "auf Wiedersehen", article: "", plural: "", translation: "خداحافظ (رسمی)", example: "Auf Wiedersehen, Frau Schmidt!", exampleTranslation: "خداحافظ، خانم اشمیت!" },
+                    { word: "Name", article: "der", plural: "die Namen", translation: "نام، اسم", example: "Mein Name ist Mehdi.", exampleTranslation: "اسم من مهدی است." },
+                    { word: "Frau", article: "die", plural: "die Frauen", translation: "خانم / زن", example: "Frau Müller ist Lehrerin.", exampleTranslation: "خانم مولر معلم است." },
+                    { word: "Herr", article: "der", plural: "die Herren", translation: "آقا", example: "Herr Schmidt kommt aus Berlin.", exampleTranslation: "آقای اشمیت از برلین می‌آید." },
+                    { word: "Land", article: "das", plural: "die Länder", translation: "کشور", example: "Aus welchem Land kommst du?", exampleTranslation: "از چه کشوری می‌آیی؟" },
+                    { word: "Sprache", article: "die", plural: "die Sprachen", translation: "زبان", example: "Welche Sprache sprichst du?", exampleTranslation: "چه زبانی صحبت می‌کنی؟" },
+                    { word: "Deutsch", article: "", plural: "", translation: "آلمانی", example: "Ich lerne Deutsch.", exampleTranslation: "من آلمانی یاد می‌گیرم." },
+                    { word: "Englisch", article: "", plural: "", translation: "انگلیسی", example: "Sie spricht Englisch.", exampleTranslation: "او انگلیسی صحبت می‌کند." },
+                    { word: "kommen", article: "", plural: "", translation: "آمدن", example: "Ich komme aus dem Iran.", exampleTranslation: "من از ایران می‌آیم." },
+                    { word: "heißen", article: "", plural: "", translation: "نام داشتن", example: "Wie heißen Sie?", exampleTranslation: "اسم شما چیست؟" },
+                    { word: "sprechen", article: "", plural: "", translation: "صحبت کردن", example: "Er spricht drei Sprachen.", exampleTranslation: "او سه زبان صحبت می‌کند." },
+                    { word: "sein", article: "", plural: "", translation: "بودن", example: "Ich bin Student.", exampleTranslation: "من دانشجو هستم." },
+                    { word: "wohnen", article: "", plural: "", translation: "زندگی کردن / سکونت داشتن", example: "Ich wohne in Berlin.", exampleTranslation: "من در برلین زندگی می‌کنم." },
+                    { word: "lernen", article: "", plural: "", translation: "یاد گرفتن", example: "Wir lernen Deutsch.", exampleTranslation: "ما آلمانی یاد می‌گیریم." },
+                    { word: "und", article: "", plural: "", translation: "و", example: "Ich spreche Deutsch und Englisch.", exampleTranslation: "من آلمانی و انگلیسی صحبت می‌کنم." },
+                    { word: "auch", article: "", plural: "", translation: "هم، همچنین", example: "Ich komme auch aus dem Iran.", exampleTranslation: "من هم از ایران می‌آیم." },
+                    { word: "ja", article: "", plural: "", translation: "بله", example: "Ja, ich spreche Deutsch.", exampleTranslation: "بله، من آلمانی صحبت می‌کنم." },
+                    { word: "nein", article: "", plural: "", translation: "نه، خیر", example: "Nein, ich komme nicht aus Berlin.", exampleTranslation: "نه، من از برلین نمی‌آیم." },
+                    { word: "nicht", article: "", plural: "", translation: "نه، نفی", example: "Ich bin nicht müde.", exampleTranslation: "من خسته نیستم." },
+                    { word: "wie", article: "", plural: "", translation: "چگونه / چطور", example: "Wie heißt du?", exampleTranslation: "اسمت چیه؟" },
+                    { word: "woher", article: "", plural: "", translation: "از کجا", example: "Woher kommst du?", exampleTranslation: "از کجا می‌آیی؟" },
+                    { word: "wo", article: "", plural: "", translation: "کجا", example: "Wo wohnst du?", exampleTranslation: "کجا زندگی می‌کنی؟" },
+                    { word: "welche", article: "", plural: "", translation: "کدام / چه", example: "Welche Sprachen sprichst du?", exampleTranslation: "چه زبان‌هایی صحبت می‌کنی؟" },
+                    { word: "aus", article: "", plural: "", translation: "از (مبدأ)", example: "Ich komme aus Teheran.", exampleTranslation: "من از تهران می‌آیم." },
+                    { word: "in", article: "", plural: "", translation: "در", example: "Ich wohne in München.", exampleTranslation: "من در مونیخ زندگی می‌کنم." }
+                ],
+                exercises: [
+                    {
+                        type: "multiple",
+                        question: "«من مهدی هستم» به آلمانی:",
+                        options: ["Ich bin Mehdi.", "Ich heiße Mehdi.", "هر دو صحیح است.", "Ich komme Mehdi."],
+                        correct: 2
+                    },
+                    {
+                        type: "multiple",
+                        question: "Wie _____ du?",
+                        options: ["heißt", "heiße", "heißen", "heißt ihr"],
+                        correct: 0
+                    },
+                    {
+                        type: "multiple",
+                        question: "Woher _____ Sie?",
+                        options: ["kommst", "kommt", "kommen", "komme"],
+                        correct: 2
+                    },
+                    {
+                        type: "multiple",
+                        question: "Er _____ aus Berlin.",
+                        options: ["komme", "kommst", "kommt", "kommen"],
+                        correct: 2
+                    },
+                    {
+                        type: "multiple",
+                        question: "_____ du Deutsch?",
+                        options: ["Sprichst", "Spreche", "Sprecht", "Sprechen"],
+                        correct: 0
+                    },
+                    {
+                        type: "multiple",
+                        question: "Wir _____ Studenten.",
+                        options: ["bin", "bist", "ist", "sind"],
+                        correct: 3
+                    },
+                    {
+                        type: "multiple",
+                        question: "Ich _____ in München.",
+                        options: ["wohne", "wohnst", "wohnt", "wohnen"],
+                        correct: 0
+                    },
+                    {
+                        type: "fill",
+                        question: "Ich _____ Anna. (heißen)",
+                        answer: "heiße"
+                    },
+                    {
+                        type: "fill",
+                        question: "Woher _____ du? (kommen)",
+                        answer: "kommst"
+                    },
+                    {
+                        type: "fill",
+                        question: "Er _____ Lehrer. (sein)",
+                        answer: "ist"
+                    },
+                    {
+                        type: "multiple",
+                        question: "کدام سلام رسمی است؟",
+                        options: ["Hallo!", "Guten Tag!", "Tschüs!", "Hi!"],
+                        correct: 1
+                    },
+                    {
+                        type: "multiple",
+                        question: "Auf Wiedersehen یعنی:",
+                        options: ["سلام", "خداحافظ (رسمی)", "صبح بخیر", "شب بخیر"],
+                        correct: 1
+                    }
+                ]
+            },
+
+            // --- Lektion 2: Ich bin Journalistin ---
+            {
+                id: 2,
+                title: "Ich bin Journalistin",
+                subtitle: "من خبرنگار هستم - شغل‌ها",
+                explanation: {
+                    title: "شغل‌ها و معرفی حرفه",
+                    blocks: [
+                        {
+                            heading: "موضوع درس",
+                            text: "در این درس یاد می‌گیرید شغل خود را بگویید، درباره شغل دیگران سؤال کنید، و فرق شکل مذکر و مؤنث شغل‌ها را بدانید."
+                        },
+                        {
+                            heading: "مکالمه نمونه",
+                            dialog: [
+                                { speaker: "A", text: "Was bist du von Beruf?" },
+                                { speaker: "B", text: "Ich bin Journalistin. Und du?" },
+                                { speaker: "A", text: "Ich bin Arzt." },
+                                { speaker: "B", text: "Wo arbeitest du?" },
+                                { speaker: "A", text: "Ich arbeite in einem Krankenhaus." }
+                            ]
+                        },
+                        {
+                            heading: "نکته مهم: مذکر و مؤنث شغل‌ها",
+                            text: "در آلمانی بیشتر شغل‌ها برای مؤنث پسوند -in می‌گیرند. مثلاً: Lehrer → Lehrerin، Arzt → Ärztin، Student → Studentin. دقت کنید بعضی شغل‌ها Umlaut هم می‌گیرند."
+                        }
+                    ]
+                },
+                grammar: {
+                    title: "فعل‌های haben و arbeiten - حالت مذکر و مؤنث شغل",
+                    blocks: [
+                        {
+                            heading: "صرف فعل arbeiten (کار کردن)",
+                            text: "فعل arbeiten از فعل‌های بی‌قاعده‌ای است که در بعضی صیغه‌ها e اضافه می‌شود.",
+                            table: {
+                                headers: ["ضمیر", "arbeiten", "مثال"],
+                                rows: [
+                                    ["ich", "arbeite", "Ich arbeite bei Siemens."],
+                                    ["du", "arbeitest", "Wo arbeitest du?"],
+                                    ["er/sie/es", "arbeitet", "Sie arbeitet als Ärztin."],
+                                    ["wir", "arbeiten", "Wir arbeiten zusammen."],
+                                    ["ihr", "arbeitet", "Wo arbeitet ihr?"],
+                                    ["sie/Sie", "arbeiten", "Sie arbeiten in Berlin."]
+                                ]
+                            }
+                        },
+                        {
+                            heading: "مذکر و مؤنث شغل‌ها",
+                            table: {
+                                headers: ["مذکر", "مؤنث", "فارسی"],
+                                rows: [
+                                    ["Lehrer", "Lehrerin", "معلم"],
+                                    ["Arzt", "Ärztin", "پزشک"],
+                                    ["Student", "Studentin", "دانشجو"],
+                                    ["Journalist", "Journalistin", "خبرنگار"],
+                                    ["Ingenieur", "Ingenieurin", "مهندس"],
+                                    ["Kellner", "Kellnerin", "گارسون"],
+                                    ["Koch", "Köchin", "آشپز"],
+                                    ["Verkäufer", "Verkäuferin", "فروشنده"]
+                                ]
+                            }
+                        },
+                        {
+                            heading: "نکته: بدون حرف تعریف",
+                            text: "وقتی شغل خود را بیان می‌کنید، حرف تعریف (ein/eine) استفاده نمی‌شود.",
+                            examples: [
+                                { de: "Ich bin Arzt. (نه: Ich bin ein Arzt.)", fa: "من پزشک هستم." },
+                                { de: "Sie ist Lehrerin.", fa: "او معلم است." }
+                            ]
+                        }
+                    ]
+                },
+                vocabulary: [
+                    { word: "Beruf", article: "der", plural: "die Berufe", translation: "شغل، حرفه", example: "Was ist dein Beruf?", exampleTranslation: "شغلت چیه؟" },
+                    { word: "Arzt", article: "der", plural: "die Ärzte", translation: "پزشک (مرد)", example: "Er ist Arzt.", exampleTranslation: "او پزشک است." },
+                    { word: "Ärztin", article: "die", plural: "die Ärztinnen", translation: "پزشک (زن)", example: "Sie ist Ärztin.", exampleTranslation: "او پزشک است." },
+                    { word: "Lehrer", article: "der", plural: "die Lehrer", translation: "معلم (مرد)", example: "Mein Vater ist Lehrer.", exampleTranslation: "پدرم معلم است." },
+                    { word: "Lehrerin", article: "die", plural: "die Lehrerinnen", translation: "معلم (زن)", example: "Frau Müller ist Lehrerin.", exampleTranslation: "خانم مولر معلم است." },
+                    { word: "Student", article: "der", plural: "die Studenten", translation: "دانشجو (مرد)", example: "Ich bin Student.", exampleTranslation: "من دانشجو هستم." },
+                    { word: "Studentin", article: "die", plural: "die Studentinnen", translation: "دانشجو (زن)", example: "Anna ist Studentin.", exampleTranslation: "آنا دانشجو است." },
+                    { word: "Journalist", article: "der", plural: "die Journalisten", translation: "خبرنگار (مرد)", example: "Er arbeitet als Journalist.", exampleTranslation: "او به عنوان خبرنگار کار می‌کند." },
+                    { word: "Ingenieur", article: "der", plural: "die Ingenieure", translation: "مهندس (مرد)", example: "Mehdi ist Ingenieur.", exampleTranslation: "مهدی مهندس است." },
+                    { word: "Kellner", article: "der", plural: "die Kellner", translation: "گارسون (مرد)", example: "Der Kellner ist freundlich.", exampleTranslation: "گارسون مهربان است." },
+                    { word: "Koch", article: "der", plural: "die Köche", translation: "آشپز (مرد)", example: "Er ist Koch in einem Restaurant.", exampleTranslation: "او در یک رستوران آشپز است." },
+                    { word: "Verkäufer", article: "der", plural: "die Verkäufer", translation: "فروشنده (مرد)", example: "Der Verkäufer hilft mir.", exampleTranslation: "فروشنده به من کمک می‌کند." },
+                    { word: "arbeiten", article: "", plural: "", translation: "کار کردن", example: "Ich arbeite bei BMW.", exampleTranslation: "من در بی‌ام‌و کار می‌کنم." },
+                    { word: "als", article: "", plural: "", translation: "به عنوان", example: "Sie arbeitet als Ärztin.", exampleTranslation: "او به عنوان پزشک کار می‌کند." },
+                    { word: "bei", article: "", plural: "", translation: "نزد / در (شرکت)", example: "Ich arbeite bei Siemens.", exampleTranslation: "من در زیمنس کار می‌کنم." },
+                    { word: "Krankenhaus", article: "das", plural: "die Krankenhäuser", translation: "بیمارستان", example: "Sie arbeitet im Krankenhaus.", exampleTranslation: "او در بیمارستان کار می‌کند." },
+                    { word: "Schule", article: "die", plural: "die Schulen", translation: "مدرسه", example: "Er arbeitet in einer Schule.", exampleTranslation: "او در یک مدرسه کار می‌کند." },
+                    { word: "Universität", article: "die", plural: "die Universitäten", translation: "دانشگاه", example: "Ich studiere an der Universität.", exampleTranslation: "من در دانشگاه درس می‌خوانم." }
+                ],
+                exercises: [
+                    { type: "multiple", question: "Was bist du von _____?", options: ["Beruf", "Arbeit", "Name", "Land"], correct: 0 },
+                    { type: "multiple", question: "شکل مؤنث Arzt چیست؟", options: ["Arztin", "Ärztin", "Arzte", "Ärzte"], correct: 1 },
+                    { type: "multiple", question: "Ich _____ als Ingenieur.", options: ["arbeite", "arbeitest", "arbeitet", "arbeiten"], correct: 0 },
+                    { type: "multiple", question: "Du _____ bei Siemens.", options: ["arbeite", "arbeitest", "arbeitet", "arbeiten"], correct: 1 },
+                    { type: "fill", question: "Sie _____ Lehrerin. (sein)", answer: "ist" },
+                    { type: "fill", question: "Wo _____ du? (arbeiten)", answer: "arbeitest" },
+                    { type: "multiple", question: "مؤنث Koch:", options: ["Kochin", "Köchin", "Kocherin", "Koche"], correct: 1 },
+                    { type: "multiple", question: "Ich bin Arzt. چرا ein نداریم؟", options: ["چون فعل sein ندارد", "چون شغل بدون حرف تعریف می‌آید", "چون Arzt مذکر است", "چون جمله منفی است"], correct: 1 },
+                    { type: "fill", question: "Er arbeitet _____ einem Krankenhaus. (in/bei)", answer: "in" },
+                    { type: "multiple", question: "Frau Schmidt ist _____.", options: ["Verkäufer", "Verkäuferin", "Verkaufen", "Verkäufe"], correct: 1 }
+                ]
+            },
+
+            // --- Lektion 3: Das ist mein Bruder ---
+            {
+                id: 3,
+                title: "Das ist mein Bruder",
+                subtitle: "این برادرم است - خانواده",
+                explanation: {
+                    title: "خانواده و ضمایر ملکی",
+                    blocks: [
+                        {
+                            heading: "موضوع درس",
+                            text: "در این درس یاد می‌گیرید اعضای خانواده را معرفی کنید، از ضمایر ملکی استفاده کنید و درباره خانواده صحبت کنید."
+                        },
+                        {
+                            heading: "مکالمه نمونه",
+                            dialog: [
+                                { speaker: "Lisa", text: "Hast du Geschwister?" },
+                                { speaker: "Tom", text: "Ja, ich habe einen Bruder und eine Schwester." },
+                                { speaker: "Lisa", text: "Wie heißt dein Bruder?" },
+                                { speaker: "Tom", text: "Mein Bruder heißt Max. Er ist 25 Jahre alt." },
+                                { speaker: "Lisa", text: "Und deine Schwester?" },
+                                { speaker: "Tom", text: "Meine Schwester heißt Julia. Sie ist Studentin." }
+                            ]
+                        }
+                    ]
+                },
+                grammar: {
+                    title: "ضمایر ملکی mein/dein - فعل haben",
+                    blocks: [
+                        {
+                            heading: "صرف فعل haben (داشتن)",
+                            table: {
+                                headers: ["ضمیر", "haben", "مثال"],
+                                rows: [
+                                    ["ich", "habe", "Ich habe einen Bruder."],
+                                    ["du", "hast", "Hast du Kinder?"],
+                                    ["er/sie/es", "hat", "Er hat eine Schwester."],
+                                    ["wir", "haben", "Wir haben zwei Kinder."],
+                                    ["ihr", "habt", "Habt ihr Geschwister?"],
+                                    ["sie/Sie", "haben", "Sie haben drei Söhne."]
+                                ]
+                            }
+                        },
+                        {
+                            heading: "ضمایر ملکی (Possessivartikel)",
+                            table: {
+                                headers: ["ضمیر", "مذکر/خنثی", "مؤنث/جمع"],
+                                rows: [
+                                    ["ich", "mein", "meine"],
+                                    ["du", "dein", "deine"],
+                                    ["er/es", "sein", "seine"],
+                                    ["sie", "ihr", "ihre"],
+                                    ["wir", "unser", "unsere"],
+                                    ["ihr", "euer", "eure"],
+                                    ["sie/Sie", "ihr/Ihr", "ihre/Ihre"]
+                                ]
+                            }
+                        },
+                        {
+                            heading: "مثال‌ها",
+                            examples: [
+                                { de: "Das ist mein Bruder.", fa: "این برادرم است." },
+                                { de: "Meine Mutter ist Lehrerin.", fa: "مادرم معلم است." },
+                                { de: "Sein Vater ist Arzt.", fa: "پدرش پزشک است." },
+                                { de: "Ihre Schwester wohnt in Berlin.", fa: "خواهرش در برلین زندگی می‌کند." }
+                            ]
+                        }
+                    ]
+                },
+                vocabulary: [
+                    { word: "Familie", article: "die", plural: "die Familien", translation: "خانواده", example: "Meine Familie ist groß.", exampleTranslation: "خانواده‌ام بزرگ است." },
+                    { word: "Vater", article: "der", plural: "die Väter", translation: "پدر", example: "Mein Vater ist 50 Jahre alt.", exampleTranslation: "پدرم ۵۰ ساله است." },
+                    { word: "Mutter", article: "die", plural: "die Mütter", translation: "مادر", example: "Meine Mutter kocht gern.", exampleTranslation: "مادرم دوست دارد آشپزی کند." },
+                    { word: "Bruder", article: "der", plural: "die Brüder", translation: "برادر", example: "Mein Bruder heißt Ali.", exampleTranslation: "برادرم اسمش علی است." },
+                    { word: "Schwester", article: "die", plural: "die Schwestern", translation: "خواهر", example: "Meine Schwester ist Ärztin.", exampleTranslation: "خواهرم پزشک است." },
+                    { word: "Eltern", article: "die", plural: "(فقط جمع)", translation: "والدین", example: "Meine Eltern wohnen in Teheran.", exampleTranslation: "والدینم در تهران زندگی می‌کنند." },
+                    { word: "Kind", article: "das", plural: "die Kinder", translation: "بچه، فرزند", example: "Sie hat zwei Kinder.", exampleTranslation: "او دو فرزند دارد." },
+                    { word: "Sohn", article: "der", plural: "die Söhne", translation: "پسر (فرزند)", example: "Sein Sohn ist Student.", exampleTranslation: "پسرش دانشجو است." },
+                    { word: "Tochter", article: "die", plural: "die Töchter", translation: "دختر (فرزند)", example: "Ihre Tochter lernt Deutsch.", exampleTranslation: "دخترش آلمانی یاد می‌گیرد." },
+                    { word: "Geschwister", article: "die", plural: "(فقط جمع)", translation: "خواهر و برادرها", example: "Hast du Geschwister?", exampleTranslation: "خواهر و برادر داری؟" },
+                    { word: "Großvater", article: "der", plural: "die Großväter", translation: "پدربزرگ", example: "Mein Großvater ist 80.", exampleTranslation: "پدربزرگم ۸۰ ساله است." },
+                    { word: "Großmutter", article: "die", plural: "die Großmütter", translation: "مادربزرگ", example: "Meine Großmutter kocht sehr gut.", exampleTranslation: "مادربزرگم خیلی خوب آشپزی می‌کند." },
+                    { word: "Onkel", article: "der", plural: "die Onkel", translation: "عمو / دایی", example: "Mein Onkel wohnt in Hamburg.", exampleTranslation: "عمویم در هامبورگ زندگی می‌کند." },
+                    { word: "Tante", article: "die", plural: "die Tanten", translation: "عمه / خاله", example: "Meine Tante ist Lehrerin.", exampleTranslation: "خاله‌ام معلم است." },
+                    { word: "verheiratet", article: "", plural: "", translation: "متأهل", example: "Er ist verheiratet.", exampleTranslation: "او متأهل است." },
+                    { word: "ledig", article: "", plural: "", translation: "مجرد", example: "Sie ist ledig.", exampleTranslation: "او مجرد است." },
+                    { word: "alt", article: "", plural: "", translation: "سن دار / قدیمی", example: "Wie alt bist du?", exampleTranslation: "چند سالته؟" },
+                    { word: "Jahr", article: "das", plural: "die Jahre", translation: "سال", example: "Ich bin 25 Jahre alt.", exampleTranslation: "من ۲۵ ساله هستم." }
+                ],
+                exercises: [
+                    { type: "multiple", question: "Ich _____ zwei Brüder.", options: ["habe", "hast", "hat", "haben"], correct: 0 },
+                    { type: "multiple", question: "_____ Schwester heißt Mina. (من)", options: ["Mein", "Meine", "Meinen", "Meiner"], correct: 1 },
+                    { type: "multiple", question: "Das ist _____ Bruder. (او - مرد)", options: ["sein", "seine", "ihr", "ihre"], correct: 0 },
+                    { type: "fill", question: "_____ du Kinder? (haben)", answer: "Hast" },
+                    { type: "fill", question: "Mein Vater _____ 50 Jahre alt. (sein)", answer: "ist" },
+                    { type: "multiple", question: "جمع Kind:", options: ["Kinds", "Kinder", "Kindern", "Kinde"], correct: 1 },
+                    { type: "multiple", question: "Eltern یعنی:", options: ["بچه‌ها", "خواهرها", "والدین", "پدربزرگ‌ها"], correct: 2 },
+                    { type: "fill", question: "_____ Mutter ist Ärztin. (او - زن)", answer: "Ihre" },
+                    { type: "multiple", question: "verheiratet یعنی:", options: ["مجرد", "متأهل", "جوان", "پیر"], correct: 1 },
+                    { type: "multiple", question: "Er _____ eine Tochter.", options: ["habe", "hast", "hat", "haben"], correct: 2 }
+                ]
+            },
+
+            // --- Lektion 4-12 (continued with same detailed structure) ---
+            {
+                id: 4, title: "Der Tisch ist schön!", subtitle: "میز قشنگه! - اشیاء و صفات",
+                explanation: { title: "اشیاء و رنگ‌ها", blocks: [
+                    { heading: "موضوع درس", text: "در این درس با حرف‌های تعریف (der, die, das)، صفت‌ها و رنگ‌ها آشنا می‌شوید. یاد می‌گیرید اشیاء را توصیف کنید." },
+                    { heading: "مکالمه نمونه", dialog: [
+                        { speaker: "A", text: "Was ist das?" },
+                        { speaker: "B", text: "Das ist ein Tisch." },
+                        { speaker: "A", text: "Der Tisch ist sehr schön!" },
+                        { speaker: "B", text: "Ja, und die Lampe ist auch schön." }
+                    ]}
+                ]},
+                grammar: { title: "حرف تعریف معین و نامعین - جنسیت اسم‌ها", blocks: [
+                    { heading: "حرف تعریف معین (Bestimmter Artikel)", table: { headers: ["جنسیت", "حرف تعریف", "مثال"], rows: [
+                        ["مذکر", "der", "der Tisch (میز)"],
+                        ["مؤنث", "die", "die Lampe (چراغ)"],
+                        ["خنثی", "das", "das Buch (کتاب)"],
+                        ["جمع", "die", "die Bücher (کتاب‌ها)"]
+                    ]}},
+                    { heading: "حرف تعریف نامعین (Unbestimmter Artikel)", table: { headers: ["جنسیت", "حرف تعریف", "مثال"], rows: [
+                        ["مذکر", "ein", "ein Tisch"],
+                        ["مؤنث", "eine", "eine Lampe"],
+                        ["خنثی", "ein", "ein Buch"]
+                    ]}},
+                    { heading: "حالت منفی (Negativartikel kein)", table: { headers: ["جنسیت", "kein", "مثال"], rows: [
+                        ["مذکر", "kein", "Das ist kein Tisch."],
+                        ["مؤنث", "keine", "Das ist keine Lampe."],
+                        ["خنثی", "kein", "Das ist kein Buch."],
+                        ["جمع", "keine", "Das sind keine Bücher."]
+                    ]}}
+                ]},
+                vocabulary: [
+                    { word: "Tisch", article: "der", plural: "die Tische", translation: "میز", example: "Der Tisch ist groß.", exampleTranslation: "میز بزرگ است." },
+                    { word: "Stuhl", article: "der", plural: "die Stühle", translation: "صندلی", example: "Der Stuhl ist bequem.", exampleTranslation: "صندلی راحت است." },
+                    { word: "Lampe", article: "die", plural: "die Lampen", translation: "چراغ", example: "Die Lampe ist schön.", exampleTranslation: "چراغ زیباست." },
+                    { word: "Buch", article: "das", plural: "die Bücher", translation: "کتاب", example: "Das Buch ist interessant.", exampleTranslation: "کتاب جالب است." },
+                    { word: "Kugelschreiber", article: "der", plural: "die Kugelschreiber", translation: "خودکار", example: "Hast du einen Kugelschreiber?", exampleTranslation: "خودکار داری؟" },
+                    { word: "Tasche", article: "die", plural: "die Taschen", translation: "کیف", example: "Meine Tasche ist schwarz.", exampleTranslation: "کیفم سیاه است." },
+                    { word: "Handy", article: "das", plural: "die Handys", translation: "موبایل", example: "Wo ist mein Handy?", exampleTranslation: "موبایلم کجاست؟" },
+                    { word: "Schlüssel", article: "der", plural: "die Schlüssel", translation: "کلید", example: "Der Schlüssel ist hier.", exampleTranslation: "کلید اینجاست." },
+                    { word: "schön", article: "", plural: "", translation: "زیبا، قشنگ", example: "Die Blume ist schön.", exampleTranslation: "گل زیباست." },
+                    { word: "groß", article: "", plural: "", translation: "بزرگ", example: "Das Haus ist groß.", exampleTranslation: "خانه بزرگ است." },
+                    { word: "klein", article: "", plural: "", translation: "کوچک", example: "Die Wohnung ist klein.", exampleTranslation: "آپارتمان کوچک است." },
+                    { word: "neu", article: "", plural: "", translation: "نو، جدید", example: "Das Auto ist neu.", exampleTranslation: "ماشین نو است." },
+                    { word: "rot", article: "", plural: "", translation: "قرمز", example: "Die Tasche ist rot.", exampleTranslation: "کیف قرمز است." },
+                    { word: "blau", article: "", plural: "", translation: "آبی", example: "Der Kugelschreiber ist blau.", exampleTranslation: "خودکار آبی است." },
+                    { word: "schwarz", article: "", plural: "", translation: "سیاه", example: "Das Handy ist schwarz.", exampleTranslation: "موبایل سیاه است." },
+                    { word: "weiß", article: "", plural: "", translation: "سفید", example: "Der Tisch ist weiß.", exampleTranslation: "میز سفید است." }
+                ],
+                exercises: [
+                    { type: "multiple", question: "_____ Tisch ist groß.", options: ["Der", "Die", "Das", "Ein"], correct: 0 },
+                    { type: "multiple", question: "Das ist _____ Lampe.", options: ["ein", "eine", "einen", "einer"], correct: 1 },
+                    { type: "multiple", question: "Das ist _____ Buch. (منفی)", options: ["nicht", "kein", "keine", "keinen"], correct: 1 },
+                    { type: "fill", question: "_____ Stuhl ist bequem. (the)", answer: "Der" },
+                    { type: "fill", question: "Meine Tasche ist _____. (سیاه)", answer: "schwarz" },
+                    { type: "multiple", question: "جنسیت Lampe:", options: ["der", "die", "das", "ein"], correct: 1 },
+                    { type: "multiple", question: "جمع Buch:", options: ["Buchs", "Buche", "Bücher", "Büche"], correct: 2 },
+                    { type: "multiple", question: "_____ Handy ist neu.", options: ["Der", "Die", "Das", "Eine"], correct: 2 }
+                ]
+            },
+
+            {
+                id: 5, title: "Was ist das? – Das ist ein F.", subtitle: "این چیه؟ - اعداد و هجی کردن",
+                explanation: { title: "اعداد ۱ تا ۱۰۰ و الفبا", blocks: [
+                    { heading: "موضوع درس", text: "در این درس اعداد آلمانی، الفبا و هجی کردن (buchstabieren) را یاد می‌گیرید." }
+                ]},
+                grammar: { title: "اعداد و الفبای آلمانی", blocks: [
+                    { heading: "اعداد ۰ تا ۲۰", table: { headers: ["عدد", "آلمانی", "عدد", "آلمانی"], rows: [
+                        ["0", "null", "11", "elf"],
+                        ["1", "eins", "12", "zwölf"],
+                        ["2", "zwei", "13", "dreizehn"],
+                        ["3", "drei", "14", "vierzehn"],
+                        ["4", "vier", "15", "fünfzehn"],
+                        ["5", "fünf", "16", "sechzehn"],
+                        ["6", "sechs", "17", "siebzehn"],
+                        ["7", "sieben", "18", "achtzehn"],
+                        ["8", "acht", "19", "neunzehn"],
+                        ["9", "neun", "20", "zwanzig"],
+                        ["10", "zehn", "", ""]
+                    ]}},
+                    { heading: "اعداد ۲۱ تا ۱۰۰", text: "در آلمانی اعداد بالای ۲۰ برعکس فارسی گفته می‌شوند: ابتدا یکان بعد دهگان. مثلاً ۲۱ = einundzwanzig (یک و بیست).",
+                      examples: [
+                        { de: "21 = einundzwanzig", fa: "بیست و یک" },
+                        { de: "35 = fünfunddreißig", fa: "سی و پنج" },
+                        { de: "99 = neunundneunzig", fa: "نود و نه" }
+                    ]}
+                ]},
+                vocabulary: [
+                    { word: "Zahl", article: "die", plural: "die Zahlen", translation: "عدد", example: "Welche Zahl ist das?", exampleTranslation: "این چه عددی است؟" },
+                    { word: "Telefonnummer", article: "die", plural: "die Telefonnummern", translation: "شماره تلفن", example: "Wie ist deine Telefonnummer?", exampleTranslation: "شماره تلفنت چنده؟" },
+                    { word: "Adresse", article: "die", plural: "die Adressen", translation: "آدرس", example: "Wie ist deine Adresse?", exampleTranslation: "آدرست چیه؟" },
+                    { word: "Straße", article: "die", plural: "die Straßen", translation: "خیابان", example: "Ich wohne in der Mozartstraße.", exampleTranslation: "من در خیابان موتزارت زندگی می‌کنم." },
+                    { word: "Hausnummer", article: "die", plural: "die Hausnummern", translation: "شماره خانه / پلاک", example: "Die Hausnummer ist 12.", exampleTranslation: "شماره خانه ۱۲ است." },
+                    { word: "buchstabieren", article: "", plural: "", translation: "هجی کردن", example: "Können Sie Ihren Namen buchstabieren?", exampleTranslation: "می‌توانید اسمتان را هجی کنید؟" },
+                    { word: "Postleitzahl", article: "die", plural: "die Postleitzahlen", translation: "کد پستی", example: "Die Postleitzahl ist 80331.", exampleTranslation: "کد پستی ۸۰۳۳۱ است." },
+                    { word: "E-Mail", article: "die", plural: "die E-Mails", translation: "ایمیل", example: "Wie ist deine E-Mail-Adresse?", exampleTranslation: "ایمیلت چیه؟" }
+                ],
+                exercises: [
+                    { type: "multiple", question: "zwölf = ?", options: ["10", "11", "12", "13"], correct: 2 },
+                    { type: "multiple", question: "einunddreißig = ?", options: ["13", "30", "31", "21"], correct: 2 },
+                    { type: "fill", question: "45 به آلمانی:", answer: "fünfundvierzig" },
+                    { type: "multiple", question: "Wie ist deine _____?", options: ["Name", "Telefonnummer", "Beruf", "Land"], correct: 1 },
+                    { type: "fill", question: "78 به آلمانی:", answer: "achtundsiebzig" }
+                ]
+            },
+
+            { id: 6, title: "Ich brauche kein Auto", subtitle: "من ماشین نیاز ندارم", explanation: { title: "نیازها و خرید", blocks: [{ heading: "موضوع", text: "بیان نیازها با brauchen و حالت Akkusativ." }] }, grammar: { title: "Akkusativ و فعل brauchen", blocks: [{ heading: "حالت مفعولی (Akkusativ)", table: { headers: ["", "مذکر", "مؤنث", "خنثی"], rows: [["معین", "den", "die", "das"], ["نامعین", "einen", "eine", "ein"], ["منفی", "keinen", "keine", "kein"]] } }] }, vocabulary: [
+                { word: "Auto", article: "das", plural: "die Autos", translation: "ماشین", example: "Ich brauche kein Auto.", exampleTranslation: "من ماشین نیاز ندارم." },
+                { word: "Fahrrad", article: "das", plural: "die Fahrräder", translation: "دوچرخه", example: "Er fährt Fahrrad.", exampleTranslation: "او دوچرخه‌سواری می‌کند." },
+                { word: "Computer", article: "der", plural: "die Computer", translation: "کامپیوتر", example: "Ich brauche einen Computer.", exampleTranslation: "من یک کامپیوتر نیاز دارم." },
+                { word: "Fernseher", article: "der", plural: "die Fernseher", translation: "تلویزیون", example: "Der Fernseher ist neu.", exampleTranslation: "تلویزیون نو است." },
+                { word: "brauchen", article: "", plural: "", translation: "نیاز داشتن", example: "Was brauchst du?", exampleTranslation: "چی نیاز داری؟" },
+                { word: "kaufen", article: "", plural: "", translation: "خریدن", example: "Ich kaufe ein Buch.", exampleTranslation: "من یک کتاب می‌خرم." },
+                { word: "billig", article: "", plural: "", translation: "ارزان", example: "Das Auto ist billig.", exampleTranslation: "ماشین ارزان است." },
+                { word: "teuer", article: "", plural: "", translation: "گران", example: "Der Computer ist teuer.", exampleTranslation: "کامپیوتر گران است." }
+            ], exercises: [
+                { type: "multiple", question: "Ich brauche _____ Auto.", options: ["ein", "eine", "einen", "einer"], correct: 0 },
+                { type: "multiple", question: "Er kauft _____ Tisch.", options: ["ein", "eine", "einen", "einer"], correct: 2 },
+                { type: "fill", question: "Ich brauche _____ Computer. (kein - مذکر Akk.)", answer: "keinen" }
+            ]},
+
+            { id: 7, title: "Du kannst wirklich toll...!", subtitle: "تو واقعاً عالی میتونی...!", explanation: { title: "توانایی‌ها و فعل können", blocks: [{ heading: "موضوع", text: "بیان توانایی‌ها، سرگرمی‌ها و فعل‌های مودال." }] }, grammar: { title: "فعل مودال können", blocks: [{ heading: "صرف können", table: { headers: ["ضمیر", "können"], rows: [["ich", "kann"], ["du", "kannst"], ["er/sie/es", "kann"], ["wir", "können"], ["ihr", "könnt"], ["sie/Sie", "können"]] } }, { heading: "ساختار جمله با فعل مودال", text: "فعل مودال در جایگاه دوم و فعل اصلی در آخر جمله (Infinitiv) قرار می‌گیرد.", examples: [{ de: "Ich kann gut schwimmen.", fa: "من خوب شنا بلدم." }, { de: "Kannst du kochen?", fa: "آشپزی بلدی؟" }] }] }, vocabulary: [
+                { word: "können", article: "", plural: "", translation: "توانستن", example: "Ich kann Deutsch sprechen.", exampleTranslation: "من می‌توانم آلمانی صحبت کنم." },
+                { word: "schwimmen", article: "", plural: "", translation: "شنا کردن", example: "Sie kann gut schwimmen.", exampleTranslation: "او خوب شنا بلده." },
+                { word: "kochen", article: "", plural: "", translation: "آشپزی کردن", example: "Kannst du kochen?", exampleTranslation: "آشپزی بلدی؟" },
+                { word: "singen", article: "", plural: "", translation: "آواز خواندن", example: "Er kann toll singen.", exampleTranslation: "او عالی آواز می‌خواند." },
+                { word: "tanzen", article: "", plural: "", translation: "رقصیدن", example: "Wir können tanzen.", exampleTranslation: "ما رقصیدن بلدیم." },
+                { word: "spielen", article: "", plural: "", translation: "بازی کردن", example: "Die Kinder spielen im Garten.", exampleTranslation: "بچه‌ها در باغ بازی می‌کنند." },
+                { word: "gut", article: "", plural: "", translation: "خوب", example: "Er spricht gut Deutsch.", exampleTranslation: "او خوب آلمانی صحبت می‌کند." },
+                { word: "toll", article: "", plural: "", translation: "عالی", example: "Das ist toll!", exampleTranslation: "عالیه!" },
+                { word: "wirklich", article: "", plural: "", translation: "واقعاً", example: "Du bist wirklich nett.", exampleTranslation: "تو واقعاً مهربانی." }
+            ], exercises: [
+                { type: "multiple", question: "Ich _____ gut kochen.", options: ["kann", "kannst", "können", "könnt"], correct: 0 },
+                { type: "multiple", question: "_____ du schwimmen?", options: ["Kann", "Kannst", "Können", "Könnt"], correct: 1 },
+                { type: "fill", question: "Sie _____ toll singen. (können)", answer: "kann" }
+            ]},
+
+            { id: 8, title: "Kein Problem. Ich habe Zeit!", subtitle: "مشکلی نیست. من وقت دارم!", explanation: { title: "زمان و ساعت", blocks: [{ heading: "موضوع", text: "در این درس ساعت پرسیدن، روزهای هفته و قرار گذاشتن را یاد می‌گیرید." }] }, grammar: { title: "ساعت و روزهای هفته", blocks: [{ heading: "ساعت پرسیدن", examples: [{ de: "Wie spät ist es?", fa: "ساعت چنده؟" }, { de: "Es ist drei Uhr.", fa: "ساعت سه است." }, { de: "Um wie viel Uhr?", fa: "ساعت چند؟" }] }, { heading: "روزهای هفته", table: { headers: ["آلمانی", "فارسی"], rows: [["Montag", "دوشنبه"], ["Dienstag", "سه‌شنبه"], ["Mittwoch", "چهارشنبه"], ["Donnerstag", "پنجشنبه"], ["Freitag", "جمعه"], ["Samstag", "شنبه"], ["Sonntag", "یکشنبه"]] } }] }, vocabulary: [
+                { word: "Zeit", article: "die", plural: "die Zeiten", translation: "وقت، زمان", example: "Ich habe keine Zeit.", exampleTranslation: "من وقت ندارم." },
+                { word: "Uhr", article: "die", plural: "die Uhren", translation: "ساعت", example: "Es ist 10 Uhr.", exampleTranslation: "ساعت ۱۰ است." },
+                { word: "Termin", article: "der", plural: "die Termine", translation: "قرار ملاقات", example: "Ich habe einen Termin.", exampleTranslation: "من یک قرار دارم." },
+                { word: "heute", article: "", plural: "", translation: "امروز", example: "Heute ist Montag.", exampleTranslation: "امروز دوشنبه است." },
+                { word: "morgen", article: "", plural: "", translation: "فردا", example: "Bis morgen!", exampleTranslation: "تا فردا!" },
+                { word: "Problem", article: "das", plural: "die Probleme", translation: "مشکل", example: "Kein Problem!", exampleTranslation: "مشکلی نیست!" },
+                { word: "Woche", article: "die", plural: "die Wochen", translation: "هفته", example: "Eine Woche hat sieben Tage.", exampleTranslation: "یک هفته هفت روز دارد." }
+            ], exercises: [
+                { type: "multiple", question: "Wie _____ ist es?", options: ["viel", "spät", "alt", "groß"], correct: 1 },
+                { type: "fill", question: "Es ist fünf _____.", answer: "Uhr" },
+                { type: "multiple", question: "Mittwoch یعنی:", options: ["دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه"], correct: 2 }
+            ]},
+
+            { id: 9, title: "Ich möchte ...", subtitle: "من می‌خواهم...", explanation: { title: "سفارش دادن و möchten", blocks: [{ heading: "موضوع", text: "سفارش غذا و نوشیدنی، فعل möchten." }] }, grammar: { title: "فعل möchten", blocks: [{ heading: "صرف möchten", table: { headers: ["ضمیر", "möchten"], rows: [["ich", "möchte"], ["du", "möchtest"], ["er/sie/es", "möchte"], ["wir", "möchten"], ["ihr", "möchtet"], ["sie/Sie", "möchten"]] } }] }, vocabulary: [
+                { word: "möchten", article: "", plural: "", translation: "خواستن (مؤدبانه)", example: "Ich möchte einen Kaffee.", exampleTranslation: "من یک قهوه می‌خواهم." },
+                { word: "Kaffee", article: "der", plural: "", translation: "قهوه", example: "Möchtest du Kaffee?", exampleTranslation: "قهوه می‌خواهی؟" },
+                { word: "Tee", article: "der", plural: "", translation: "چای", example: "Ich trinke gern Tee.", exampleTranslation: "من با لذت چای می‌نوشم." },
+                { word: "Wasser", article: "das", plural: "", translation: "آب", example: "Ein Glas Wasser, bitte.", exampleTranslation: "یک لیوان آب، لطفاً." },
+                { word: "Brot", article: "das", plural: "die Brote", translation: "نان", example: "Ich kaufe Brot.", exampleTranslation: "من نان می‌خرم." },
+                { word: "Kuchen", article: "der", plural: "die Kuchen", translation: "کیک", example: "Der Kuchen ist lecker.", exampleTranslation: "کیک خوشمزه است." },
+                { word: "essen", article: "", plural: "", translation: "خوردن", example: "Was möchtest du essen?", exampleTranslation: "چی می‌خواهی بخوری؟" },
+                { word: "trinken", article: "", plural: "", translation: "نوشیدن", example: "Ich trinke Wasser.", exampleTranslation: "من آب می‌نوشم." },
+                { word: "bitte", article: "", plural: "", translation: "لطفاً", example: "Einen Kaffee, bitte.", exampleTranslation: "یک قهوه، لطفاً." },
+                { word: "danke", article: "", plural: "", translation: "ممنون", example: "Danke schön!", exampleTranslation: "خیلی ممنون!" }
+            ], exercises: [
+                { type: "multiple", question: "Ich _____ einen Tee.", options: ["möchte", "möchtest", "möchten", "möchtet"], correct: 0 },
+                { type: "fill", question: "_____ du Kaffee? (möchten)", answer: "Möchtest" },
+                { type: "multiple", question: "bitte یعنی:", options: ["ممنون", "لطفاً", "سلام", "خداحافظ"], correct: 1 }
+            ]},
+
+            { id: 10, title: "Ich steige jetzt aus", subtitle: "الان پیاده می‌شم", explanation: { title: "حمل و نقل و فعل‌های جداشدنی", blocks: [{ heading: "موضوع", text: "فعل‌های جداشدنی و حمل‌ونقل شهری." }] }, grammar: { title: "فعل‌های جداشدنی (Trennbare Verben)", blocks: [{ heading: "ساختار", text: "در فعل‌های جداشدنی، پیشوند از فعل جدا شده و به آخر جمله می‌رود.", examples: [{ de: "Ich steige um. (umsteigen)", fa: "من عوض می‌کنم (وسیله نقلیه)." }, { de: "Er steigt aus. (aussteigen)", fa: "او پیاده می‌شود." }, { de: "Wir steigen ein. (einsteigen)", fa: "ما سوار می‌شویم." }] }] }, vocabulary: [
+                { word: "aussteigen", article: "", plural: "", translation: "پیاده شدن", example: "Ich steige jetzt aus.", exampleTranslation: "الان پیاده می‌شوم." },
+                { word: "einsteigen", article: "", plural: "", translation: "سوار شدن", example: "Bitte einsteigen!", exampleTranslation: "لطفاً سوار شوید!" },
+                { word: "umsteigen", article: "", plural: "", translation: "عوض کردن (وسیله)", example: "Du musst in Hauptbahnhof umsteigen.", exampleTranslation: "باید در ایستگاه مرکزی عوض کنی." },
+                { word: "Bus", article: "der", plural: "die Busse", translation: "اتوبوس", example: "Der Bus kommt um 8 Uhr.", exampleTranslation: "اتوبوس ساعت ۸ می‌آید." },
+                { word: "Zug", article: "der", plural: "die Züge", translation: "قطار", example: "Der Zug fährt nach Berlin.", exampleTranslation: "قطار به برلین می‌رود." },
+                { word: "U-Bahn", article: "die", plural: "die U-Bahnen", translation: "مترو", example: "Ich fahre mit der U-Bahn.", exampleTranslation: "من با مترو می‌روم." },
+                { word: "Haltestelle", article: "die", plural: "die Haltestellen", translation: "ایستگاه", example: "Die Haltestelle ist dort.", exampleTranslation: "ایستگاه آنجاست." },
+                { word: "fahren", article: "", plural: "", translation: "رانندگی کردن / رفتن", example: "Ich fahre mit dem Bus.", exampleTranslation: "من با اتوبوس می‌روم." }
+            ], exercises: [
+                { type: "multiple", question: "Ich _____ jetzt _____. (aussteigen)", options: ["steige...aus", "steige...ein", "steigt...aus", "steigen...aus"], correct: 0 },
+                { type: "fill", question: "Er _____ in Berlin _____. (umsteigen)", answer: "steigt...um" },
+                { type: "multiple", question: "U-Bahn یعنی:", options: ["اتوبوس", "قطار", "مترو", "تاکسی"], correct: 2 }
+            ]},
+
+            { id: 11, title: "Was hast du heute gemacht?", subtitle: "امروز چیکار کردی؟", explanation: { title: "زمان گذشته Perfekt", blocks: [{ heading: "موضوع", text: "صحبت درباره گذشته با زمان Perfekt." }] }, grammar: { title: "زمان Perfekt", blocks: [{ heading: "ساختار Perfekt", text: "Perfekt = haben/sein + Partizip II. بیشتر فعل‌ها با haben ساخته می‌شوند.", examples: [{ de: "Ich habe Deutsch gelernt.", fa: "من آلمانی یاد گرفتم." }, { de: "Er hat gearbeitet.", fa: "او کار کرد." }, { de: "Wir sind nach Berlin gefahren.", fa: "ما به برلین رفتیم." }] }, { heading: "ساخت Partizip II (فعل‌های باقاعده)", text: "ge + ریشه فعل + t = Partizip II. مثلاً: lernen → gelernt, machen → gemacht, arbeiten → gearbeitet" }] }, vocabulary: [
+                { word: "gemacht", article: "", plural: "", translation: "انجام داده (Partizip II)", example: "Was hast du gemacht?", exampleTranslation: "چیکار کردی؟" },
+                { word: "gelernt", article: "", plural: "", translation: "یاد گرفته", example: "Ich habe Deutsch gelernt.", exampleTranslation: "آلمانی یاد گرفتم." },
+                { word: "gearbeitet", article: "", plural: "", translation: "کار کرده", example: "Er hat viel gearbeitet.", exampleTranslation: "او زیاد کار کرده." },
+                { word: "gekocht", article: "", plural: "", translation: "آشپزی کرده", example: "Sie hat Abendessen gekocht.", exampleTranslation: "او شام پخته." },
+                { word: "gefahren", article: "", plural: "", translation: "رفته / رانندگی کرده", example: "Wir sind nach München gefahren.", exampleTranslation: "ما به مونیخ رفتیم." },
+                { word: "gestern", article: "", plural: "", translation: "دیروز", example: "Gestern war ich müde.", exampleTranslation: "دیروز خسته بودم." },
+                { word: "letzte Woche", article: "", plural: "", translation: "هفته گذشته", example: "Letzte Woche habe ich viel gelernt.", exampleTranslation: "هفته گذشته زیاد درس خواندم." }
+            ], exercises: [
+                { type: "multiple", question: "Ich _____ Deutsch _____.", options: ["habe...gelernt", "bin...gelernt", "habe...lernen", "hat...gelernt"], correct: 0 },
+                { type: "fill", question: "Sie _____ gestern _____. (kochen)", answer: "hat...gekocht" },
+                { type: "multiple", question: "Wir _____ nach Berlin _____.", options: ["haben...gefahren", "sind...gefahren", "haben...gefahrt", "sind...gefahrt"], correct: 1 }
+            ]},
+
+            { id: 12, title: "Was ist passiert?", subtitle: "چه اتفاقی افتاده؟", explanation: { title: "Perfekt با فعل‌های بی‌قاعده", blocks: [{ heading: "موضوع", text: "تکمیل زمان Perfekt با فعل‌های بی‌قاعده و کاربردهای بیشتر." }] }, grammar: { title: "Partizip II فعل‌های بی‌قاعده", blocks: [{ heading: "فعل‌های بی‌قاعده مهم", table: { headers: ["Infinitiv", "Partizip II", "فارسی"], rows: [["essen", "gegessen", "خوردن"], ["trinken", "getrunken", "نوشیدن"], ["schreiben", "geschrieben", "نوشتن"], ["lesen", "gelesen", "خواندن"], ["sprechen", "gesprochen", "صحبت کردن"], ["sehen", "gesehen", "دیدن"], ["nehmen", "genommen", "گرفتن"], ["geben", "gegeben", "دادن"], ["kommen", "gekommen", "آمدن"], ["gehen", "gegangen", "رفتن"]] } }] }, vocabulary: [
+                { word: "passieren", article: "", plural: "", translation: "اتفاق افتادن", example: "Was ist passiert?", exampleTranslation: "چه اتفاقی افتاده؟" },
+                { word: "gegessen", article: "", plural: "", translation: "خورده (P.II)", example: "Ich habe Pizza gegessen.", exampleTranslation: "من پیتزا خوردم." },
+                { word: "getrunken", article: "", plural: "", translation: "نوشیده (P.II)", example: "Er hat Kaffee getrunken.", exampleTranslation: "او قهوه نوشید." },
+                { word: "geschrieben", article: "", plural: "", translation: "نوشته (P.II)", example: "Sie hat einen Brief geschrieben.", exampleTranslation: "او یک نامه نوشت." },
+                { word: "gelesen", article: "", plural: "", translation: "خوانده (P.II)", example: "Ich habe ein Buch gelesen.", exampleTranslation: "من یک کتاب خواندم." },
+                { word: "gesprochen", article: "", plural: "", translation: "صحبت کرده (P.II)", example: "Wir haben Deutsch gesprochen.", exampleTranslation: "ما آلمانی صحبت کردیم." },
+                { word: "gesehen", article: "", plural: "", translation: "دیده (P.II)", example: "Hast du den Film gesehen?", exampleTranslation: "فیلم رو دیدی؟" },
+                { word: "gegangen", article: "", plural: "", translation: "رفته (P.II)", example: "Ich bin ins Kino gegangen.", exampleTranslation: "من به سینما رفتم." }
+            ], exercises: [
+                { type: "multiple", question: "Ich habe Pizza _____.", options: ["geesst", "gegessen", "geessen", "essent"], correct: 1 },
+                { type: "multiple", question: "Er _____ ins Kino _____.", options: ["hat...gegangen", "ist...gegangen", "hat...gegangt", "ist...gegeht"], correct: 1 },
+                { type: "fill", question: "Sie hat ein Buch _____. (lesen)", answer: "gelesen" }
+            ]}
+        ]
+    },
+
+    // ============================
+    // A1.2 - Lesson stubs (12 lessons)
+    // ============================
+    "a1-2": {
+        name: "A1.2", fullName: "Menschen A1.2", color: "#64d2ff", icon: "🌿", description: "مبتدی - بخش دوم",
+        lessons: Array.from({length: 12}, (_, i) => ({
+            id: i+1,
+            title: `Lektion ${i+13}`,
+            subtitle: `درس ${i+13} - A1.2`,
+            explanation: { title: `درس ${i+13}`, blocks: [{ heading: "موضوع", text: "محتوای این درس به زودی اضافه می‌شود." }] },
+            grammar: { title: "گرامر", blocks: [{ heading: "گرامر درس", text: "محتوای گرامر به زودی اضافه می‌شود." }] },
+            vocabulary: [
+                { word: "Beispiel", article: "das", plural: "die Beispiele", translation: "مثال", example: "Das ist ein Beispiel.", exampleTranslation: "این یک مثال است." }
+            ],
+            exercises: [{ type: "multiple", question: "تمرین نمونه", options: ["الف", "ب", "ج", "د"], correct: 0 }]
+        }))
+    },
+
+    // Other levels follow same pattern
+    "a2-1": { name: "A2.1", fullName: "Menschen A2.1", color: "#0a84ff", icon: "🌳", description: "پایه - بخش اول", lessons: Array.from({length: 12}, (_, i) => ({ id: i+1, title: `Lektion ${i+1}`, subtitle: `درس ${i+1} - A2.1`, explanation: { title: `درس ${i+1}`, blocks: [{ heading: "موضوع", text: "محتوا به زودی..." }] }, grammar: { title: "گرامر", blocks: [{ heading: "گرامر", text: "محتوا به زودی..." }] }, vocabulary: [{ word: "Wort", article: "das", plural: "die Wörter", translation: "کلمه", example: "Das ist ein Wort.", exampleTranslation: "این یک کلمه است." }], exercises: [{ type: "multiple", question: "نمونه", options: ["الف", "ب", "ج", "د"], correct: 0 }] })) },
+    "a2-2": { name: "A2.2", fullName: "Menschen A2.2", color: "#bf5af2", icon: "🌲", description: "پایه - بخش دوم", lessons: Array.from({length: 12}, (_, i) => ({ id: i+1, title: `Lektion ${i+1}`, subtitle: `درس ${i+1} - A2.2`, explanation: { title: `درس ${i+1}`, blocks: [{ heading: "موضوع", text: "محتوا به زودی..." }] }, grammar: { title: "گرامر", blocks: [{ heading: "گرامر", text: "محتوا به زودی..." }] }, vocabulary: [{ word: "Satz", article: "der", plural: "die Sätze", translation: "جمله", example: "Das ist ein Satz.", exampleTranslation: "این یک جمله است." }], exercises: [{ type: "multiple", question: "نمونه", options: ["الف", "ب", "ج", "د"], correct: 0 }] })) },
+    "b1-1": { name: "B1.1", fullName: "Menschen B1.1", color: "#ff9f0a", icon: "🏔️", description: "متوسط - بخش اول", lessons: Array.from({length: 12}, (_, i) => ({ id: i+1, title: `Lektion ${i+1}`, subtitle: `درس ${i+1} - B1.1`, explanation: { title: `درس ${i+1}`, blocks: [{ heading: "موضوع", text: "محتوا به زودی..." }] }, grammar: { title: "گرامر", blocks: [{ heading: "گرامر", text: "محتوا به زودی..." }] }, vocabulary: [{ word: "Text", article: "der", plural: "die Texte", translation: "متن", example: "Lesen Sie den Text.", exampleTranslation: "متن را بخوانید." }], exercises: [{ type: "multiple", question: "نمونه", options: ["الف", "ب", "ج", "د"], correct: 0 }] })) },
+    "b1-2": { name: "B1.2", fullName: "Menschen B1.2", color: "#ff375f", icon: "⛰️", description: "متوسط - بخش دوم", lessons: Array.from({length: 12}, (_, i) => ({ id: i+1, title: `Lektion ${i+1}`, subtitle: `درس ${i+1} - B1.2`, explanation: { title: `درس ${i+1}`, blocks: [{ heading: "موضوع", text: "محتوا به زودی..." }] }, grammar: { title: "گرامر", blocks: [{ heading: "گرامر", text: "محتوا به زودی..." }] }, vocabulary: [{ word: "Aufgabe", article: "die", plural: "die Aufgaben", translation: "تکلیف", example: "Machen Sie die Aufgabe.", exampleTranslation: "تکلیف را انجام دهید." }], exercises: [{ type: "multiple", question: "نمونه", options: ["الف", "ب", "ج", "د"], correct: 0 }] })) },
+    "b2-1": { name: "B2.1", fullName: "Menschen B2.1", color: "#ff453a", icon: "🏆", description: "پیشرفته - بخش اول", lessons: Array.from({length: 12}, (_, i) => ({ id: i+1, title: `Lektion ${i+1}`, subtitle: `درس ${i+1} - B2.1`, explanation: { title: `درس ${i+1}`, blocks: [{ heading: "موضوع", text: "محتوا به زودی..." }] }, grammar: { title: "گرامر", blocks: [{ heading: "گرامر", text: "محتوا به زودی..." }] }, vocabulary: [{ word: "Thema", article: "das", plural: "die Themen", translation: "موضوع", example: "Was ist das Thema?", exampleTranslation: "موضوع چیست؟" }], exercises: [{ type: "multiple", question: "نمونه", options: ["الف", "ب", "ج", "د"], correct: 0 }] })) },
+    "b2-2": { name: "B2.2", fullName: "Menschen B2.2", color: "#ffd60a", icon: "👑", description: "پیشرفته - بخش دوم", lessons: Array.from({length: 12}, (_, i) => ({ id: i+1, title: `Lektion ${i+1}`, subtitle: `درس ${i+1} - B2.2`, explanation: { title: `درس ${i+1}`, blocks: [{ heading: "موضوع", text: "محتوا به زودی..." }] }, grammar: { title: "گرامر", blocks: [{ heading: "گرامر", text: "محتوا به زودی..." }] }, vocabulary: [{ word: "Ergebnis", article: "das", plural: "die Ergebnisse", translation: "نتیجه", example: "Das Ergebnis ist gut.", exampleTranslation: "نتیجه خوب است." }], exercises: [{ type: "multiple", question: "نمونه", options: ["الف", "ب", "ج", "د"], correct: 0 }] })) }
+    };
+
+    // ============================================
+    // APP STATE
+    // ============================================
+    let appState = {
+        currentPage: 'home',
+        currentLevel: null,
+        currentLesson: null,
+        currentSection: null,
+        history: [],
+        user: null,
+        settings: {
+            darkMode: true,
+            sound: true,
+            autoPlay: false,
+            speechRate: 1,
+            fontSize: 'medium',
+            notifications: true,
+            language: 'fa'
+        },
+        progress: {},
+        xp: 0,
+        streak: 0,
+        lessonsCompleted: 0,
+        correctAnswers: 0,
+        wordsLearned: 0
+    };
+
+    // Load saved state
+    function loadState() {
+        try {
+            const saved = localStorage.getItem('germanAppState');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                appState = { ...appState, ...parsed };
+                applySettings();
+            }
+        } catch(e) { console.log('No saved state'); }
+    }
+
+    function saveState() {
+        try {
+            localStorage.setItem('germanAppState', JSON.stringify({
+                settings: appState.settings,
+                progress: appState.progress,
+                xp: appState.xp,
+                streak: appState.streak,
+                lessonsCompleted: appState.lessonsCompleted,
+                correctAnswers: appState.correctAnswers,
+                wordsLearned: appState.wordsLearned,
+                user: appState.user
+            }));
+        } catch(e) {}
+    }
+
+    function applySettings() {
+        document.body.setAttribute('data-theme', appState.settings.darkMode ? 'dark' : 'light');
+        document.getElementById('darkModeToggle').classList.toggle('active', appState.settings.darkMode);
+        document.getElementById('soundToggle').classList.toggle('active', appState.settings.sound);
+        document.getElementById('autoPlayToggle').classList.toggle('active', appState.settings.autoPlay);
+        
+        const sizes = { small: '14px', medium: '16px', large: '18px' };
+        document.documentElement.style.fontSize = sizes[appState.settings.fontSize] || '16px';
+    }
+
+    // ============================================
+    // NAVIGATION
+    // ============================================
+    function navigateTo(page) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        const pageEl = document.getElementById(`page-${page}`);
+        if (pageEl) pageEl.classList.add('active');
+        
+        const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+        if (navItem) navItem.classList.add('active');
+        
+        appState.currentPage = page;
+        
+        // Update header
+        const backBtn = document.getElementById('headerBack');
+        const headerTitle = document.getElementById('headerTitle');
+        
+        if (page === 'home') {
+            backBtn.style.display = 'none';
+            headerTitle.textContent = 'German App';
+        } else if (page === 'scores') {
+            backBtn.style.display = 'none';
+            headerTitle.textContent = 'امتیازات';
+        } else if (page === 'online') {
+            backBtn.style.display = 'none';
+            headerTitle.textContent = 'آنلاین';
+        } else if (page === 'settings') {
+            backBtn.style.display = 'none';
+            headerTitle.textContent = 'تنظیمات';
+        }
+
+        updateStats();
+    }
+
+    function goBack() {
+        if (appState.currentSection) {
+            showLessonDetail(appState.currentLevel, appState.currentLesson);
+            appState.currentSection = null;
+        } else if (appState.currentLesson !== null) {
+            showLessons(appState.currentLevel);
+            appState.currentLesson = null;
+        } else if (appState.currentLevel) {
+            navigateTo('home');
+            appState.currentLevel = null;
+        } else {
+            navigateTo('home');
+        }
+    }
+
+    // ============================================
+    // HOME PAGE - LEVEL GRID
+    // ============================================
+    function renderLevelGrid() {
+        const grid = document.getElementById('levelGrid');
+        grid.innerHTML = '';
+        
+        Object.entries(BOOK_DATA).forEach(([key, level]) => {
+            const progress = calculateLevelProgress(key);
+            const card = document.createElement('div');
+            card.className = 'level-card glass-card';
+            card.setAttribute('data-level', key);
+            card.onclick = () => showLessons(key);
+            card.innerHTML = `
+                <div class="level-badge">${level.icon}</div>
+                <div class="level-name">${level.name}</div>
+                <div class="level-desc">${level.description}</div>
+                <div class="level-progress">
+                    <div class="level-progress-fill" style="width:${progress}%"></div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function calculateLevelProgress(levelKey) {
+        const progress = appState.progress[levelKey] || {};
+        const total = BOOK_DATA[levelKey].lessons.length * 4;
+        const completed = Object.values(progress).reduce((sum, l) => {
+            return sum + (l.explanation ? 1 : 0) + (l.grammar ? 1 : 0) + (l.vocabulary ? 1 : 0) + (l.exercises ? 1 : 0);
+        }, 0);
+        return total > 0 ? Math.round((completed / total) * 100) : 0;
+    }
+
+    // ============================================
+    // LESSONS LIST
+    // ============================================
+    function showLessons(levelKey) {
+        appState.currentLevel = levelKey;
+        const level = BOOK_DATA[levelKey];
+        
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-lessons').classList.add('active');
+        
+        document.getElementById('headerBack').style.display = 'flex';
+        document.getElementById('headerTitle').textContent = level.fullName;
+        
+        const progress = calculateLevelProgress(levelKey);
+        document.getElementById('lessonsPageTitle').innerHTML = `${level.icon} ${level.fullName}`;
+        document.getElementById('levelProgressBar').style.width = `${progress}%`;
+        document.getElementById('levelProgressText').textContent = `${progress}% تکمیل شده`;
+        
+        const list = document.getElementById('lessonsList');
+        list.innerHTML = '';
+        
+        level.lessons.forEach((lesson, idx) => {
+            const lessonProgress = appState.progress[levelKey]?.[lesson.id] || {};
+            const completedSections = (lessonProgress.explanation ? 1 : 0) + (lessonProgress.grammar ? 1 : 0) + (lessonProgress.vocabulary ? 1 : 0) + (lessonProgress.exercises ? 1 : 0);
+            const colors = ['#30d158', '#0a84ff', '#bf5af2', '#ff9f0a', '#ff375f', '#64d2ff', '#ff453a', '#ffd60a', '#30d158', '#0a84ff', '#bf5af2', '#ff9f0a'];
+            
+            const item = document.createElement('div');
+            item.className = 'lesson-item glass-card';
+            item.onclick = () => showLessonDetail(levelKey, lesson.id);
+            item.innerHTML = `
+                <div class="lesson-number" style="background:${colors[idx % colors.length]}; color:#fff">${lesson.id}</div>
+                <div class="lesson-info">
+                    <div class="lesson-title">${lesson.title}</div>
+                    <div class="lesson-subtitle">${lesson.subtitle} • ${completedSections}/4</div>
+                </div>
+                <div class="lesson-status">${completedSections === 4 ? '✅' : completedSections > 0 ? '🔄' : '📘'}</div>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    // ============================================
+    // LESSON DETAIL
+    // ============================================
+    function showLessonDetail(levelKey, lessonId) {
+        appState.currentLevel = levelKey;
+        appState.currentLesson = lessonId;
+        appState.currentSection = null;
+        
+        const level = BOOK_DATA[levelKey];
+        const lesson = level.lessons.find(l => l.id === lessonId);
+        
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-lesson-detail').classList.add('active');
+        
+        document.getElementById('headerBack').style.display = 'flex';
+        document.getElementById('headerTitle').textContent = `${level.name} - Lektion ${lessonId}`;
+        
+        document.getElementById('lessonDetailTitle').textContent = lesson.title;
+        document.getElementById('lessonDetailDesc').textContent = lesson.subtitle;
+    }
+
+    // ============================================
+    // SHOW SECTION CONTENT
+    // ============================================
+    function showSection(sectionType) {
+        appState.currentSection = sectionType;
+        
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-section').classList.add('active');
+        
+        // Update tabs
+        document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+        
+        const tabMap = { explanation: 0, grammar: 1, vocabulary: 2, exercises: 3 };
+        document.querySelectorAll('.section-tab')[tabMap[sectionType]]?.classList.add('active');
+        
+        renderSectionContent(sectionType);
+        
+        // Mark as visited
+        if (!appState.progress[appState.currentLevel]) appState.progress[appState.currentLevel] = {};
+        if (!appState.progress[appState.currentLevel][appState.currentLesson]) appState.progress[appState.currentLevel][appState.currentLesson] = {};
+        appState.progress[appState.currentLevel][appState.currentLesson][sectionType] = true;
+        
+        if (sectionType === 'vocabulary') {
+            const lesson = BOOK_DATA[appState.currentLevel].lessons.find(l => l.id === appState.currentLesson);
+            appState.wordsLearned = Math.max(appState.wordsLearned, (lesson?.vocabulary?.length || 0));
+        }
+        
+        saveState();
+    }
+
+    function switchSectionTab(sectionType) {
+        appState.currentSection = sectionType;
+        document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+        const tabMap = { explanation: 0, grammar: 1, vocabulary: 2, exercises: 3 };
+        document.querySelectorAll('.section-tab')[tabMap[sectionType]]?.classList.add('active');
+        renderSectionContent(sectionType);
+    }
+
+    function renderSectionContent(sectionType) {
+        const level = BOOK_DATA[appState.currentLevel];
+        const lesson = level.lessons.find(l => l.id === appState.currentLesson);
+        const container = document.getElementById('sectionContent');
+        
+        if (sectionType === 'explanation') {
+            container.innerHTML = renderExplanation(lesson.explanation);
+        } else if (sectionType === 'grammar') {
+            container.innerHTML = renderGrammar(lesson.grammar);
+        } else if (sectionType === 'vocabulary') {
+            container.innerHTML = renderVocabulary(lesson.vocabulary);
+        } else if (sectionType === 'exercises') {
+            container.innerHTML = renderExercises(lesson.exercises);
+        }
+    }
+
+    // ============================================
+    // RENDER EXPLANATION
+    // ============================================
+    function renderExplanation(data) {
+        let html = `<h2 class="section-title" style="margin-bottom:20px">📖 ${data.title}</h2>`;
+        
+        data.blocks.forEach(block => {
+            html += `<div class="explanation-block glass-card">`;
+            html += `<h3>${block.heading}</h3>`;
+            
+            if (block.text) {
+                html += `<p>${block.text}</p>`;
+            }
+            
+            if (block.dialog) {
+                html += `<div class="dialog-box">`;
+                block.dialog.forEach(line => {
+                    html += `<div class="dialog-line">
+                        <span class="dialog-speaker">${line.speaker}:</span>
+                        <span>${line.text}</span>
+                    </div>`;
+                });
+                html += `</div>`;
+            }
+            
+            html += `</div>`;
+        });
+        
+        return html;
+    }
+
+    // ============================================
+    // RENDER GRAMMAR
+    // ============================================
+    function renderGrammar(data) {
+        let html = `<h2 class="section-title" style="margin-bottom:20px">📝 ${data.title}</h2>`;
+        
+        data.blocks.forEach(block => {
+            html += `<div class="grammar-block glass-card">`;
+            html += `<h3>${block.heading}</h3>`;
+            
+            if (block.text) {
+                html += `<p>${block.text}</p>`;
+            }
+            
+            if (block.table) {
+                html += `<table class="grammar-table">
+                    <thead><tr>${block.table.headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+                    <tbody>${block.table.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
+                </table>`;
+            }
+            
+            if (block.examples) {
+                block.examples.forEach(ex => {
+                    html += `<div class="grammar-example">
+                        <div class="de">${ex.de}</div>
+                        <div class="fa">${ex.fa}</div>
+                    </div>`;
+                });
+            }
+            
+            if (block.note) {
+                html += `<div class="grammar-note">${block.note}</div>`;
+            }
+            
+            html += `</div>`;
+        });
+        
+        return html;
+    }
+
+    // ============================================
+    // RENDER VOCABULARY (with speech)
+    // ============================================
+    function renderVocabulary(words) {
+        let html = `<h2 class="section-title" style="margin-bottom:20px">🗣️ واژه‌ها (${words.length} کلمه)</h2>`;
+        html += `<div class="vocab-list">`;
+        
+        words.forEach((word, idx) => {
+            html += `
+            <div class="vocab-card glass-card">
+                <div class="vocab-header">
+                    <div>
+                        <span class="vocab-article">${word.article ? word.article + ' ' : ''}</span>
+                        <span class="vocab-word">${word.word}</span>
+                        ${word.plural ? `<span class="vocab-plural"> | ${word.plural}</span>` : ''}
+                    </div>
+                    <button class="vocab-speak-btn" onclick="speakWord('${word.article ? word.article + ' ' : ''}${word.word}', this)" title="تلفظ">
+                        🔊
+                    </button>
+                </div>
+                <div class="vocab-translation">${word.translation}</div>
+                <div class="vocab-example">
+                    <div class="example-de">${word.example}</div>
+                    <div class="example-fa">${word.exampleTranslation}</div>
+                </div>
+            </div>`;
+        });
+        
+        html += `</div>`;
+        return html;
+    }
+
+    // ============================================
+    // TEXT TO SPEECH
+    // ============================================
+    function speakWord(text, btn) {
+        if (!appState.settings.sound) return;
+        
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'de-DE';
+            utterance.rate = appState.settings.speechRate;
+            utterance.pitch = 1;
+            
+            // Try to find a German voice
+            const voices = window.speechSynthesis.getVoices();
+            const germanVoice = voices.find(v => v.lang.startsWith('de'));
+            if (germanVoice) utterance.voice = germanVoice;
+            
+            if (btn) {
+                btn.classList.add('playing');
+                utterance.onend = () => btn.classList.remove('playing');
+                utterance.onerror = () => btn.classList.remove('playing');
+            }
+            
+            window.speechSynthesis.speak(utterance);
+        } else {
+            showToast('مرورگر شما از تلفظ صوتی پشتیبانی نمی‌کند');
+        }
+    }
+
+    // Ensure voices are loaded
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    // ============================================
+    // RENDER EXERCISES
+    // ============================================
+    function renderExercises(exercises) {
+        let html = `<h2 class="section-title" style="margin-bottom:20px">✏️ تمرین‌ها (${exercises.length} سؤال)</h2>`;
+        html += `<div class="exercise-container">`;
+        
+        exercises.forEach((ex, idx) => {
+            html += `<div class="exercise-card glass-card" id="exercise-${idx}">`;
+            html += `<div class="exercise-type">${ex.type === 'multiple' ? 'چند گزینه‌ای' : 'جای خالی'}</div>`;
+            html += `<div class="exercise-question">${idx + 1}. ${ex.question}</div>`;
+            
+            if (ex.type === 'multiple') {
+                html += `<div class="exercise-options">`;
+                const letters = ['A', 'B', 'C', 'D'];
+                ex.options.forEach((opt, optIdx) => {
+                    html += `<div class="exercise-option glass-card" onclick="checkMultiple(${idx}, ${optIdx}, ${ex.correct})" id="opt-${idx}-${optIdx}">
+                        <span class="option-letter">${letters[optIdx]}</span>
+                        <span>${opt}</span>
+                    </div>`;
+                });
+                html += `</div>`;
+            } else if (ex.type === 'fill') {
+                html += `<div style="margin-bottom:12px">
+                    <input type="text" class="glass-input fill-blank-input" id="fill-${idx}" placeholder="پاسخ خود را بنویسید..." dir="ltr" autocomplete="off">
+                </div>
+                <button class="glass-button primary check-btn" onclick="checkFill(${idx}, '${ex.answer}')">بررسی ✓</button>`;
+            }
+            
+            html += `<div class="exercise-feedback" id="feedback-${idx}"></div>`;
+            html += `</div>`;
+        });
+        
+        html += `</div>`;
+        return html;
+    }
+
+    function checkMultiple(exIdx, selectedIdx, correctIdx) {
+        const options = document.querySelectorAll(`#exercise-${exIdx} .exercise-option`);
+        const feedback = document.getElementById(`feedback-${exIdx}`);
+        
+        // Reset
+        options.forEach(o => { o.classList.remove('correct', 'incorrect', 'selected'); o.style.pointerEvents = 'none'; });
+        
+        if (selectedIdx === correctIdx) {
+            options[selectedIdx].classList.add('correct');
+            feedback.className = 'exercise-feedback correct';
+            feedback.textContent = '✅ آفرین! پاسخ صحیح است.';
+            appState.xp += 10;
+            appState.correctAnswers++;
+        } else {
+            options[selectedIdx].classList.add('incorrect');
+            options[correctIdx].classList.add('correct');
+            feedback.className = 'exercise-feedback incorrect';
+            feedback.textContent = `❌ پاسخ نادرست. پاسخ صحیح: ${options[correctIdx].querySelector('span:last-child').textContent}`;
+        }
+        
+        saveState();
+        updateStats();
+    }
+
+    function checkFill(exIdx, correctAnswer) {
+        const input = document.getElementById(`fill-${exIdx}`);
+        const feedback = document.getElementById(`feedback-${exIdx}`);
+        const userAnswer = input.value.trim().toLowerCase();
+        const correct = correctAnswer.toLowerCase();
+        
+        if (userAnswer === correct) {
+            feedback.className = 'exercise-feedback correct';
+            feedback.textContent = '✅ آفرین! پاسخ صحیح است.';
+            input.style.borderColor = 'var(--accent-green)';
+            appState.xp += 15;
+            appState.correctAnswers++;
+        } else {
+            feedback.className = 'exercise-feedback incorrect';
+            feedback.textContent = `❌ پاسخ نادرست. پاسخ صحیح: ${correctAnswer}`;
+            input.style.borderColor = 'var(--accent-red)';
+        }
+        
+        saveState();
+        updateStats();
+    }
+
+    // ============================================
+    // UPDATE STATS
+    // ============================================
+    function updateStats() {
+        document.getElementById('totalXP').textContent = appState.xp;
+        document.getElementById('streakCount').textContent = appState.streak;
+        
+        let completed = 0;
+        Object.values(appState.progress).forEach(level => {
+            Object.values(level).forEach(lesson => {
+                if (lesson.explanation && lesson.grammar && lesson.vocabulary && lesson.exercises) completed++;
+            });
+        });
+        appState.lessonsCompleted = completed;
+        document.getElementById('lessonsCompleted').textContent = completed;
+        
+        // Scores page
+        document.getElementById('myTotalScore').textContent = appState.xp;
+        document.getElementById('correctAnswers').textContent = appState.correctAnswers;
+        document.getElementById('wordsLearned').textContent = appState.wordsLearned;
+    }
+
+    // ============================================
+    // LEADERBOARD
+    // ============================================
+    function renderLeaderboard() {
+        const leaders = [
+            { name: 'شما', avatar: '👤', level: 'A1.1', score: appState.xp },
+            { name: 'Sara M.', avatar: '👩', level: 'B1.2', score: 4520 },
+            { name: 'Ali R.', avatar: '👨', level: 'A2.2', score: 3280 },
+            { name: 'Mina K.', avatar: '👩‍🦱', level: 'B2.1', score: 2940 },
+            { name: 'Reza T.', avatar: '🧑', level: 'A1.2', score: 1850 },
+            { name: 'Negar P.', avatar: '👩‍🔬', level: 'A2.1', score: 1420 }
+        ].sort((a, b) => b.score - a.score);
+        
+        const container = document.getElementById('leaderboard');
+        container.innerHTML = '';
+        
+        leaders.forEach((leader, idx) => {
+            const rankClass = idx < 3 ? `rank-${idx + 1}` : '';
+            container.innerHTML += `
+            <div class="leaderboard-item glass-card">
+                <div class="leaderboard-rank ${rankClass}">${idx + 1}</div>
+                <div class="leaderboard-avatar">${leader.avatar}</div>
+                <div class="leaderboard-info">
+                    <div class="leaderboard-name">${leader.name}</div>
+                    <div class="leaderboard-level">${leader.level}</div>
+                </div>
+                <div class="leaderboard-score">${leader.score} XP</div>
+            </div>`;
+        });
+    }
+
+    // ============================================
+    // SETTINGS FUNCTIONS
+    // ============================================
+    function toggleTheme() {
+        appState.settings.darkMode = !appState.settings.darkMode;
+        applySettings();
+        saveState();
+        showToast(appState.settings.darkMode ? '🌙 حالت تاریک فعال شد' : '☀️ حالت روشن فعال شد');
+    }
+
+    function toggleSound() {
+        appState.settings.sound = !appState.settings.sound;
+        document.getElementById('soundToggle').classList.toggle('active', appState.settings.sound);
+        saveState();
+        showToast(appState.settings.sound ? '🔊 صدا فعال شد' : '🔇 صدا غیرفعال شد');
+    }
+
+    function toggleAutoPlay() {
+        appState.settings.autoPlay = !appState.settings.autoPlay;
+        document.getElementById('autoPlayToggle').classList.toggle('active', appState.settings.autoPlay);
+        saveState();
+    }
+
+    function toggleNotifications() {
+        appState.settings.notifications = !appState.settings.notifications;
+        document.getElementById('notifToggle').classList.toggle('active', appState.settings.notifications);
+        saveState();
+    }
+
+    function changeFontSize() {
+        const sizes = ['small', 'medium', 'large'];
+        const labels = ['کوچک', 'متوسط', 'بزرگ'];
+        const current = sizes.indexOf(appState.settings.fontSize);
+        const next = (current + 1) % sizes.length;
+        appState.settings.fontSize = sizes[next];
+        document.getElementById('fontSizeValue').textContent = labels[next] + ' ←';
+        applySettings();
+        saveState();
+    }
+
+    function changeSpeechRate() {
+        const rates = [0.7, 1, 1.3];
+        const labels = ['آهسته', 'عادی', 'سریع'];
+        const current = rates.indexOf(appState.settings.speechRate);
+        const next = (current + 1) % rates.length;
+        appState.settings.speechRate = rates[next];
+        document.getElementById('speechRateValue').textContent = labels[next] + ' ←';
+        saveState();
+    }
+
+    function changeLanguage() {
+        showToast('فعلاً فقط ترجمه فارسی موجود است');
+    }
+
+    function resetProgress() {
+        if (confirm('آیا مطمئنید که می‌خواهید تمام پیشرفت خود را پاک کنید؟')) {
+            appState.progress = {};
+            appState.xp = 0;
+            appState.streak = 0;
+            appState.lessonsCompleted = 0;
+            appState.correctAnswers = 0;
+            appState.wordsLearned = 0;
+            saveState();
+            updateStats();
+            renderLevelGrid();
+            showToast('🗑️ پیشرفت پاک شد');
+        }
+    }
+
+    // ============================================
+    // GOOGLE SIGN IN (Simulated)
+    // ============================================
+    function signInWithGoogle() {
+        // Simulated Google sign-in
+        showToast('در حال اتصال به گوگل...');
+        
+        setTimeout(() => {
+            appState.user = {
+                name: 'کاربر آزمایشی',
+                email: 'test@gmail.com',
+                avatar: '👤'
+            };
+            saveState();
+            updateAccountView();
+            showToast('✅ ورود موفقیت‌آمیز بود!');
+        }, 1500);
+    }
+
+    function signOut() {
+        appState.user = null;
+        saveState();
+        updateAccountView();
+        showToast('خارج شدید');
+    }
+
+    function updateAccountView() {
+        if (appState.user) {
+            document.getElementById('loggedOutView').style.display = 'none';
+            document.getElementById('loggedInView').style.display = 'block';
+            document.getElementById('userName').textContent = appState.user.name;
+            document.getElementById('userEmail').textContent = appState.user.email;
+        } else {
+            document.getElementById('loggedOutView').style.display = 'block';
+            document.getElementById('loggedInView').style.display = 'none';
+        }
+    }
+
+    // ============================================
+    // TOAST NOTIFICATIONS
+    // ============================================
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function showNotifications() {
+        showToast('🔔 هیچ اعلان جدیدی ندارید');
+    }
+
+    // ============================================
+    // INITIALIZE APP
+    // ============================================
+    function initApp() {
+        loadState();
+        renderLevelGrid();
+        renderLeaderboard();
+        updateStats();
+        updateAccountView();
+        applySettings();
+        
+        // Daily streak check
+        const today = new Date().toDateString();
+        const lastVisit = localStorage.getItem('lastVisit');
+        if (lastVisit !== today) {
+            if (lastVisit === new Date(Date.now() - 86400000).toDateString()) {
+                appState.streak++;
+            } else if (lastVisit) {
+                appState.streak = 1;
+            } else {
+                appState.streak = 1;
+            }
+            localStorage.setItem('lastVisit', today);
+            saveState();
+            updateStats();
+        }
+    }
+
+    // Start the app
+    initApp();
+    </script>
+</body>
+</html>
